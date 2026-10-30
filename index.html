@@ -1,0 +1,1504 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Middags panikk™</title>
+<meta name="theme-color" content="#f7f3ec">
+<meta name="description" content="Middagsplanlegger for familien Kile: ukeplan, oppskrifter, handleliste og statistikk.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23d1552f'/%3E%3Ccircle cx='32' cy='33' r='15' fill='%23fff'/%3E%3Ccircle cx='32' cy='33' r='10' fill='none' stroke='%23d1552f' stroke-width='2' opacity='.45'/%3E%3Cpath d='M10 15v10a3 3 0 0 0 3 3v20M13 15v9M16 15v10a3 3 0 0 1-3 3' stroke='%23fff' stroke-width='2.6' stroke-linecap='round' fill='none'/%3E%3Cpath d='M51 48V15c-3 2-4 7-4 13h4' stroke='%23fff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round' fill='%23fff'/%3E%3C/svg%3E">
+<style>
+/* Middags panikk™ v1.0.0 – se CHANGELOG.md */
+:root{
+  --bg:#f7f3ec; --bg2:#efe7da; --card:#fffdf9; --card2:#f5efe5; --line:#e7dccb; --line2:#d6c7af;
+  --ink:#2a231c; --muted:#76695a; --dim:#a19482;
+  --accent:#d1552f; --accent-ink:#fff; --accent-soft:#fbe4d9; --green:#4a8a46; --green-soft:#e2efdd;
+  --star:#dc9b00; --danger:#c0392b; --today:#d1552f;
+  --shadow:0 1px 2px rgba(70,45,20,.06),0 8px 24px rgba(70,45,20,.07);
+  --r:18px; --r2:12px;
+  --head:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI Variable Display","Segoe UI",system-ui,sans-serif;
+  --body:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
+  --nav-h:64px;
+  color-scheme:light;
+}
+:root[data-theme="dark"]{
+  --bg:#16130f; --bg2:#1d1914; --card:#221e18; --card2:#2a251e; --line:#372f26; --line2:#4a3f33;
+  --ink:#f3ece2; --muted:#b5a794; --dim:#807466;
+  --accent:#ef7b52; --accent-ink:#1d0f08; --accent-soft:#3c2318; --green:#86c47f; --green-soft:#1f2d1c;
+  --star:#f4c24f; --danger:#f0705f; --today:#ef7b52;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.28);
+  color-scheme:dark;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#16130f; --bg2:#1d1914; --card:#221e18; --card2:#2a251e; --line:#372f26; --line2:#4a3f33;
+    --ink:#f3ece2; --muted:#b5a794; --dim:#807466;
+    --accent:#ef7b52; --accent-ink:#1d0f08; --accent-soft:#3c2318; --green:#86c47f; --green-soft:#1f2d1c;
+    --star:#f4c24f; --danger:#f0705f; --today:#ef7b52;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.28);
+    color-scheme:dark;
+  }
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--body);min-height:100vh;overflow-x:hidden}
+body.noscroll{overflow:hidden}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+h1,h2,h3{font-family:var(--head);letter-spacing:-.01em;margin:0}
+h1{font-size:1.6rem;font-weight:800}
+h2{font-size:1.25rem;font-weight:800}
+h3{font-size:1rem;font-weight:700}
+.muted{color:var(--muted)}
+.ro .eo{display:none!important}
+
+/* ---------- ramme ---------- */
+.top{position:sticky;top:0;z-index:30;background:color-mix(in srgb,var(--bg) 88%,transparent);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line);
+  padding:calc(8px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) 8px max(16px,env(safe-area-inset-left,0px))}
+.top-in{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:12px;min-height:44px}
+.brand{display:flex;align-items:center;gap:10px;font:800 1.2rem var(--head);text-decoration:none;color:var(--ink);flex:none}
+.brand svg{width:34px;height:34px;flex:none}
+.brand sup{font-size:.55em;margin-left:1px}
+.tabs{display:none;gap:4px;margin:0 auto}
+.tab{border:0;background:none;padding:8px 14px;border-radius:999px;color:var(--muted);font-weight:600;text-decoration:none;display:flex;align-items:center;gap:7px}
+.tab svg{width:18px;height:18px}
+.tab:hover{color:var(--ink);background:var(--card2)}
+.tab.on{color:var(--accent-ink);background:var(--accent)}
+.right{display:flex;align-items:center;gap:6px;margin-left:auto}
+#lockTop{display:flex;align-items:center;gap:6px}
+.brand{min-width:0}
+.brand span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.iconbtn{width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:var(--card);display:grid;place-items:center;font-size:1.05rem}
+.iconbtn:hover{border-color:var(--line2)}
+.lockbtn,.sync,.savebtn{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:7px 12px;font-size:.82rem;font-weight:600;white-space:nowrap}
+.lockbtn.on{border-color:var(--green);color:var(--green)}
+.sync{border-color:transparent;background:none;color:var(--muted)}
+.sync.ok{color:var(--green)}
+.sync.err{color:var(--danger);border-color:var(--danger);background:var(--card)}
+.savebtn{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+main{max-width:1280px;margin:0 auto;padding:18px max(16px,env(safe-area-inset-right,0px)) calc(var(--nav-h) + 40px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.bottom{position:fixed;left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:30;height:var(--nav-h);
+  display:grid;grid-template-columns:repeat(5,1fr);padding:6px;border-radius:22px;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow)}
+.navbtn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border-radius:16px;color:var(--muted);
+  font-size:.68rem;font-weight:700;text-decoration:none}
+.navbtn svg{width:22px;height:22px}
+.navbtn.on{color:var(--accent);background:var(--accent-soft)}
+@media (min-width:900px){
+  .tabs{display:flex}
+  .bottom{display:none}
+  main{padding-bottom:48px}
+}
+@media (max-width:520px){ .lockbtn .lbl,.savebtn .lbl,.sync .lbl{display:none} .brand span{font-size:1.05rem} .top-in{gap:8px} .right{gap:5px} .iconbtn{width:38px;height:38px} }
+
+/* ---------- felles ---------- */
+.vhead{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:16px}
+.vhead p{margin:4px 0 0}
+.btn{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:9px 15px;font-weight:600;display:inline-flex;align-items:center;gap:7px;text-decoration:none;color:var(--ink)}
+.btn:hover{border-color:var(--line2)}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.pri:hover{filter:brightness(1.05)}
+.btn.danger{color:var(--danger)}
+.btn.sm{padding:6px 11px;font-size:.85rem;border-radius:10px}
+.btn:disabled{opacity:.5;cursor:default}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+.chips{display:flex;gap:7px;overflow-x:auto;padding:2px 2px 6px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 12px;font-size:.85rem;font-weight:600;color:var(--muted);white-space:nowrap}
+.chip.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip.fav.on{background:var(--star);border-color:var(--star);color:#2a1d00}
+.tag{display:inline-flex;align-items:center;gap:5px;font-size:.78rem;font-weight:600;color:var(--muted)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--c,var(--dim));flex:none}
+.pill{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:2px 9px;font-size:.75rem;font-weight:700;background:var(--card2);color:var(--muted)}
+.pill.fast{background:var(--green-soft);color:var(--green)}
+.search{position:relative;flex:1;min-width:200px}
+.search input{width:100%;border:1px solid var(--line);background:var(--card);border-radius:12px;padding:10px 12px 10px 38px}
+.search svg{position:absolute;left:12px;top:50%;width:18px;height:18px;transform:translateY(-50%);color:var(--dim)}
+.empty{text-align:center;padding:40px 16px;color:var(--muted)}
+.empty b{display:block;font-size:2rem;margin-bottom:6px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--card)}
+.seg button{border:0;background:none;padding:8px 16px;font-weight:700;color:var(--muted)}
+.seg button.on{background:var(--accent);color:var(--accent-ink)}
+
+/* ---------- ukeplan ---------- */
+.weeknav{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.weeknav .wk{font-weight:700;min-width:170px;text-align:center}
+.weeknav .wk small{display:block;font-weight:500;color:var(--muted);font-size:.8rem}
+.days{display:grid;gap:12px;grid-template-columns:1fr}
+@media (min-width:640px){ .days{grid-template-columns:repeat(2,1fr)} }
+@media (min-width:1100px){ .days{grid-template-columns:repeat(7,1fr)} }
+.day{position:relative;display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:12px;box-shadow:var(--shadow)}
+@media (min-width:1100px){ .day{min-height:190px} }
+.day.weekend{background:linear-gradient(180deg,var(--card),var(--card2))}
+.day.today{border-color:var(--today);box-shadow:0 0 0 1px var(--today),var(--shadow)}
+.day.past{opacity:.72}
+.day header{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:8px}
+.day .dn{font:800 1rem var(--head)}
+.day .dd{font-size:.8rem;color:var(--muted)}
+.day .now{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--today)}
+.meal{flex:1;display:flex;align-items:center;gap:12px;text-align:left;border:0;background:none;padding:0;border-radius:10px}
+.meal .mi{font-size:1.6rem;line-height:1;width:44px;height:44px;flex:none;display:grid;place-items:center;border-radius:13px;background:color-mix(in srgb,var(--c) 15%,var(--card))}
+.meal .mt{display:flex;flex-direction:column;gap:3px;min-width:0}
+@media (min-width:1100px){ .meal{flex-direction:column;align-items:flex-start;gap:8px} }
+.meal b{font:700 1.02rem/1.25 var(--head)}
+.add{flex:1;display:grid;place-items:center;border:1.5px dashed var(--line2);border-radius:12px;background:none;color:var(--muted);font-weight:600;min-height:56px}
+.add:hover{color:var(--accent);border-color:var(--accent)}
+.noplan{flex:1;display:grid;place-items:center;color:var(--dim);font-size:.9rem}
+.day footer{display:flex;align-items:center;gap:6px;margin-top:10px}
+.pp{border:1px solid var(--line);background:var(--card2);border-radius:999px;padding:3px 10px;font-size:.8rem;font-weight:700}
+.pp.four{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+.mini{width:30px;height:30px;border-radius:9px;border:1px solid transparent;background:none;display:grid;place-items:center;color:var(--muted)}
+.mini:hover{background:var(--card2);border-color:var(--line)}
+.day footer .sp{flex:1}
+.summary{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.summary .card{padding:12px 16px;display:flex;align-items:center;gap:10px;flex:1;min-width:200px}
+.summary .big{font:800 1.4rem var(--head)}
+
+/* ---------- oppskrifter ---------- */
+.tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:10px}
+.tools select{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:10px 12px}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));margin-top:6px}
+.rc{position:relative;display:flex;gap:12px;align-items:flex-start;text-align:left;padding:14px;border-radius:var(--r);border:1px solid var(--line);background:var(--card);box-shadow:var(--shadow);width:100%}
+.rc:hover{border-color:var(--line2)}
+.ricon{flex:none;width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-size:1.45rem;background:color-mix(in srgb,var(--c) 16%,var(--card))}
+.rc .rb{flex:1;min-width:0}
+.rc b{display:block;font:700 1.02rem/1.25 var(--head);padding-right:26px}
+.rc p{margin:3px 0 7px;color:var(--muted);font-size:.86rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.rc .meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.star{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:10px;border:0;background:none;font-size:1.15rem;color:var(--dim);display:grid;place-items:center}
+.star.on{color:var(--star)}
+.ro .star:not(.on){display:none}
+.count{font-size:.85rem;color:var(--muted);margin-left:auto}
+
+/* ---------- handleliste ---------- */
+.shop-top{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px}
+.progress{height:8px;border-radius:99px;background:var(--card2);overflow:hidden;flex:1;min-width:140px}
+.progress i{display:block;height:100%;background:var(--green);border-radius:99px;transition:width .3s}
+.daypick{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.daypick button{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:6px 10px;font-size:.82rem;font-weight:700;color:var(--muted);min-width:46px}
+.daypick button.on{background:var(--green-soft);color:var(--green);border-color:var(--green)}
+.daypick button:disabled{opacity:.35;cursor:default}
+.secs{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));align-items:start}
+.sec{padding:12px 14px}
+.sec h3{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:.95rem}
+.sec h3 small{margin-left:auto;color:var(--muted);font-weight:600}
+.item{display:flex;align-items:center;gap:12px;padding:8px 2px;border-top:1px solid var(--line);cursor:pointer;user-select:none}
+.item:first-of-type{border-top:0}
+.item input{position:absolute;opacity:0;pointer-events:none}
+.box{flex:none;width:24px;height:24px;border-radius:8px;border:2px solid var(--line2);display:grid;place-items:center;transition:.15s}
+.item.done .box{background:var(--green);border-color:var(--green)}
+.item.done .box::after{content:"";width:6px;height:11px;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.item .it{flex:1;min-width:0}
+.item .it b{font-weight:600}
+.item .it small{display:block;color:var(--dim);font-size:.76rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item.done .it{opacity:.5;text-decoration:line-through}
+.extra-form{display:flex;gap:8px;margin-top:8px}
+.extra-form input{flex:1;border:1px solid var(--line);background:var(--card2);border-radius:10px;padding:8px 10px;min-width:0}
+
+/* ---------- statistikk ---------- */
+.stats{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));align-items:start}
+.stats .card{padding:16px}
+.stats h3{margin-bottom:12px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:12px}
+.kpi{padding:14px 16px}
+.kpi b{display:block;font:800 1.7rem var(--head)}
+.kpi span{color:var(--muted);font-size:.85rem}
+.hbar{display:grid;grid-template-columns:minmax(90px,38%) 1fr 34px;gap:10px;align-items:center;margin:7px 0;font-size:.88rem}
+.hbar .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hbar .tr{height:12px;background:var(--card2);border-radius:99px;overflow:hidden}
+.hbar .tr i{display:block;height:100%;border-radius:99px;background:var(--c,var(--accent))}
+.hbar .v{text-align:right;font-weight:700;font-variant-numeric:tabular-nums}
+.vbars{display:flex;align-items:flex-end;gap:6px;height:150px;padding-top:18px}
+.vbars .col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:4px;min-width:0}
+.vbars .col i{display:block;width:100%;max-width:30px;border-radius:7px 7px 3px 3px;background:var(--c,#2f7fb5);min-height:3px}
+.vbars .col em{font-style:normal;font-size:.75rem;font-weight:700;font-variant-numeric:tabular-nums}
+.vbars .col small{font-size:.68rem;color:var(--muted)}
+.donut{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.donut .ring{width:130px;height:130px;border-radius:50%;flex:none;display:grid;place-items:center;position:relative}
+.donut .ring::after{content:"";position:absolute;inset:22px;border-radius:50%;background:var(--card)}
+.donut .ring b{position:relative;z-index:1;font:800 1.3rem var(--head);text-align:center;line-height:1.1}
+.donut .ring b small{display:block;font:600 .7rem var(--body);color:var(--muted)}
+.legend{display:grid;gap:8px;font-size:.9rem}
+.legend div{display:flex;align-items:center;gap:8px}
+.legend .dot{width:12px;height:12px;border-radius:4px}
+
+/* ---------- modal ---------- */
+.modal-wrap{position:fixed;inset:0;z-index:50;background:rgba(20,14,8,.45);display:flex;align-items:flex-end;justify-content:center;animation:fade .15s}
+.modal{background:var(--card);width:100%;max-width:640px;max-height:92vh;overflow:auto;border-radius:22px 22px 0 0;padding:20px 18px calc(18px + env(safe-area-inset-bottom,0px));box-shadow:0 -10px 40px rgba(0,0,0,.25);animation:up .2s ease-out}
+@media (min-width:700px){ .modal-wrap{align-items:center;padding:20px} .modal{border-radius:22px;max-height:88vh} }
+@keyframes fade{from{opacity:0}}
+@keyframes up{from{transform:translateY(24px);opacity:.4}}
+.modal.wide{max-width:780px}
+.modal h2{margin-bottom:6px;padding-right:36px}
+.mclose{position:sticky;top:0;float:right;margin:-6px -6px 0 0;width:36px;height:36px;border-radius:50%;border:0;background:var(--card2);font-size:1.1rem;z-index:2}
+.acts{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;margin-top:18px}
+.acts .grow{margin-right:auto}
+.form{display:grid;gap:12px;grid-template-columns:1fr 1fr;margin-top:12px}
+.field{display:flex;flex-direction:column;gap:5px;min-width:0}
+.field.full{grid-column:1/-1}
+.field label{font-size:.82rem;font-weight:700;color:var(--muted)}
+.field input,.field select,.field textarea,.ing input,.ing select,.freetext input{border:1px solid var(--line);background:var(--card2);border-radius:10px;padding:9px 11px;width:100%;min-width:0}
+.field textarea{min-height:70px;resize:vertical}
+.check{display:flex;align-items:center;gap:8px;font-weight:600}
+.check input{width:20px;height:20px;accent-color:var(--accent)}
+.ings{display:grid;gap:8px}
+.ing{display:grid;grid-template-columns:70px 82px 1fr 36px;gap:6px;align-items:center}
+.ing .sec-sel{grid-column:1/4}
+.ing .x{border:0;background:none;color:var(--dim);font-size:1.1rem;height:36px}
+@media (min-width:560px){ .ing{grid-template-columns:72px 84px 1fr 150px 36px} .ing .sec-sel{grid-column:auto} }
+.ing-head{display:none;font-size:.74rem;font-weight:700;color:var(--dim);grid-template-columns:72px 84px 1fr 150px 36px;gap:6px}
+@media (min-width:560px){ .ing-head{display:grid} }
+.detail-meta{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.ilist{list-style:none;padding:0;margin:8px 0 0;columns:2;column-gap:20px}
+@media (max-width:480px){ .ilist{columns:1} }
+.ilist li{padding:5px 0;border-bottom:1px dashed var(--line);break-inside:avoid;display:flex;gap:8px}
+.ilist li span{color:var(--muted);min-width:68px;font-variant-numeric:tabular-nums}
+.pick-list{display:grid;gap:6px;max-height:44vh;overflow:auto;margin-top:10px;padding-right:2px}
+.pick{display:flex;align-items:center;gap:10px;text-align:left;border:1px solid var(--line);background:var(--card);border-radius:12px;padding:8px 10px;width:100%}
+.pick:hover,.pick.cur{border-color:var(--accent)}
+.pick .ricon{width:36px;height:36px;border-radius:10px;font-size:1.1rem}
+.pick .pb{flex:1;min-width:0}
+.pick .pb b{display:block;font-weight:700;font-size:.95rem}
+.pick .pb small{color:var(--muted)}
+.pick.off{opacity:.5}
+.sugg{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.sugg button{border:1px solid var(--accent);background:var(--accent-soft);color:var(--ink);border-radius:12px;padding:8px 12px;font-weight:600;text-align:left}
+.sugg button small{display:block;color:var(--muted);font-weight:500;font-size:.75rem}
+.lbl-row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:14px}
+.freetext{display:flex;gap:8px;margin-top:8px}
+.prop{display:grid;gap:8px;margin-top:12px}
+.prop-row{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:12px;padding:8px 10px;background:var(--card)}
+.prop-row.keep{background:var(--card2)}
+.prop-row .pd{width:62px;flex:none;font-weight:800;font-family:var(--head)}
+.prop-row .pd small{display:block;font:500 .72rem var(--body);color:var(--muted)}
+.prop-row .pn{flex:1;min-width:0}
+.prop-row .pn b{display:block}
+.prop-row .pn small{color:var(--muted)}
+.menu-list{display:grid;gap:8px;margin-top:12px}
+.menu-list .btn{justify-content:flex-start;padding:12px 14px}
+.steps{padding-left:20px;margin:10px 0}
+.steps li{margin:4px 0}
+.ver{font-size:.8rem;color:var(--dim);margin-top:14px;text-align:center}
+
+/* ---------- toast ---------- */
+.toasts{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--nav-h) + 24px + env(safe-area-inset-bottom,0px));z-index:60;display:grid;gap:8px;width:min(92vw,420px)}
+@media (min-width:900px){ .toasts{bottom:24px} }
+.toast{display:flex;align-items:center;gap:12px;background:var(--ink);color:var(--bg);border-radius:14px;padding:11px 14px;font-weight:600;font-size:.9rem;box-shadow:0 10px 30px rgba(0,0,0,.25);animation:up .2s ease-out}
+.toast span{flex:1}
+.toast button{border:0;background:none;color:var(--accent);font-weight:800;padding:2px 4px}
+.loading{display:grid;place-items:center;min-height:50vh;color:var(--muted)}
+</style>
+</head>
+<body class="ro">
+<header class="top">
+  <div class="top-in">
+    <a class="brand" href="#/uke" aria-label="Middags panikk – til ukeplanen">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="var(--accent)"/><circle cx="32" cy="33" r="15" fill="#fff"/><circle cx="32" cy="33" r="10" fill="none" stroke="var(--accent)" stroke-width="2" opacity=".45"/><path d="M10 15v10a3 3 0 0 0 3 3v20M13 15v9M16 15v10a3 3 0 0 1-3 3" stroke="#fff" stroke-width="2.6" stroke-linecap="round" fill="none"/><path d="M51 48V15c-3 2-4 7-4 13h4" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="#fff"/></svg>
+      <span>Middags panikk<sup>™</sup></span>
+    </a>
+    <nav class="tabs" id="tabs" aria-label="Hovedmeny"></nav>
+    <div class="right">
+      <span id="lockTop"></span>
+      <button class="iconbtn" data-act="theme" id="themeBtn" aria-label="Bytt tema">🌙</button>
+      <button class="iconbtn" data-act="menu" aria-label="Meny">⋯</button>
+    </div>
+  </div>
+</header>
+<main id="main"><div class="loading">Laster middagene…</div></main>
+<nav class="bottom" id="bottom" aria-label="Hovedmeny"></nav>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+<noscript><p style="padding:20px">Middags panikk™ trenger JavaScript.</p></noscript>
+
+<script>
+"use strict";
+/* =========================================================
+   Middags panikk™ – middagsplanlegger for familien Kile
+   Én fil. Data i meny.json i GitHub-repoet (som Vinyl Vault).
+   Alle kan se. Redigering låses opp med GitHub-nøkkel.
+   ========================================================= */
+const APP_NAME = "Middags panikk™";
+const APP_VERSION = "1.0.0";
+const GH = { owner: "kilemann", repo: "Middagspanikk.io", path: "meny.json", branch: "main" };
+
+const KEY = k => "middagspanikk." + k;
+const TOKEN_KEY = KEY("token");     // GitHub-nøkkelen (bare på enheter som er låst opp)
+const SYNC_KEY = KEY("sync");       // { sha, dirty }
+const CACHE_KEY = KEY("cache");     // siste kjente data, så appen starter straks
+const BACKUP_KEY = KEY("backup");   // kopi før import
+const THEME_KEY = KEY("theme");     // "light" | "dark" | "" (følg enheten)
+const SHOP_KEY = KEY("shop");       // avhakede varer og valgte dager per uke (bare på denne enheten)
+
+/* ---------- faste lister ---------- */
+const CATS = ["Hverdagsmiddag", "Helgekos", "Fisk", "Kylling", "Kjøtt", "Vegetar", "Grill", "Suppe"];
+const CAT_META = {
+  Hverdagsmiddag: { icon: "🍽️", c: "#c98a1b" },
+  Helgekos:       { icon: "🕯️", c: "#c2477a" },
+  Fisk:           { icon: "🐟", c: "#2f7fb5" },
+  Kylling:        { icon: "🐔", c: "#de8a2f" },
+  Kjøtt:          { icon: "🥩", c: "#a84432" },
+  Vegetar:        { icon: "🥦", c: "#4f9a4a" },
+  Grill:          { icon: "🔥", c: "#8a6040" },
+  Suppe:          { icon: "🍲", c: "#8a6bc2" },
+};
+const catIcon = c => (CAT_META[c] || { icon: "🍴" }).icon;
+const catColor = c => (CAT_META[c] || { c: "#a19482" }).c;
+const SECTIONS = ["Frukt og grønt", "Kjøtt og fisk", "Meieri og egg", "Brød og bakst", "Tørrvarer", "Hermetikk og saus", "Krydder", "Frys", "Annet"];
+const SEC_ICON = { "Frukt og grønt": "🥕", "Kjøtt og fisk": "🥩", "Meieri og egg": "🧀", "Brød og bakst": "🍞", "Tørrvarer": "🍝", "Hermetikk og saus": "🥫", "Krydder": "🧂", "Frys": "❄️", "Annet": "🛒" };
+const UNITS = ["g", "kg", "dl", "l", "ss", "ts", "stk", "pk", "pose", "boks", "glass", "beger", "fedd", "skive", "bunt"];
+const DAY_NAMES = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"];
+const DAY_SHORT = ["Ma", "Ti", "On", "To", "Fr", "Lø", "Sø"];
+const MONTHS = ["jan", "feb", "mar", "apr", "mai", "jun", "jul", "aug", "sep", "okt", "nov", "des"];
+const FAST = 30;   // minutter – «rask» hverdagsmiddag
+
+/* ---------- forhåndsutfylte retter (for 4 porsjoner) ----------
+   Ingrediens: "mengde enhet navn #avdeling"
+   Avdeling: f=Frukt og grønt k=Kjøtt og fisk m=Meieri og egg b=Brød og bakst t=Tørrvarer h=Hermetikk og saus s=Krydder z=Frys a=Annet */
+const SEC_CODE = { f: "Frukt og grønt", k: "Kjøtt og fisk", m: "Meieri og egg", b: "Brød og bakst", t: "Tørrvarer", h: "Hermetikk og saus", s: "Krydder", z: "Frys", a: "Annet" };
+const SEED = [
+  ["Taco", "Fredagsklassikeren med kjøttdeig, grønnsaker og alt tilbehøret.", 25, "Kjøtt", 1, "400 g kjøttdeig #k; 1 pose tacokrydder #s; 8 stk tortillalefser #b; 1 stk isbergsalat #f; 2 stk tomat #f; 1 stk agurk #f; 1 boks mais #h; 200 g revet ost #m; 1 beger rømme #m; 1 glass tacosaus #h"],
+  ["Kjøttkaker i brun saus", "Hjemmelagde kjøttkaker med poteter, erter og tyttebær.", 50, "Hverdagsmiddag", 0, "600 g kjøttdeig #k; 1 stk egg #m; 1 dl melk #m; 1 stk løk #f; 1 kg poteter #f; 1 pose brun saus #t; 400 g erter #z; 1 glass tyttebærsyltetøy #h"],
+  ["Laks med poteter", "Ovnsbakt laks med kokte poteter, brokkoli og smeltet smør.", 30, "Fisk", 0, "600 g laksefilet #k; 1 kg poteter #f; 1 stk brokkoli #f; 1 stk sitron #f; 75 g smør #m"],
+  ["Fiskekaker", "Fiskekaker med poteter, revet gulrot og løksaus.", 25, "Fisk", 0, "600 g fiskekaker #k; 1 kg poteter #f; 4 stk gulrot #f; 1 pose løksaus #t"],
+  ["Kyllingwok", "Rask wok med kylling, grønnsaker og ris.", 20, "Kylling", 1, "600 g kyllingfilet #k; 600 g wokgrønnsaker #z; 1 glass woksaus #h; 300 g ris #t"],
+  ["Hjemmelaget pizza", "Pizza med hjemmelaget bunn og favorittfyllet.", 75, "Helgekos", 1, "500 g hvetemel #t; 1 pk gjær #m; 1 boks hakkede tomater #h; 300 g revet ost #m; 200 g skinke #k; 1 stk paprika #f; 150 g sjampinjong #f"],
+  ["Lasagne", "Lasagne med kjøttsaus og hvit saus, gratinert i ovnen.", 80, "Helgekos", 1, "500 g kjøttdeig #k; 1 pk lasagneplater #t; 2 boks hakkede tomater #h; 1 stk løk #f; 2 fedd hvitløk #f; 5 dl melk #m; 50 g smør #m; 200 g revet ost #m"],
+  ["Biff med fløtegratinerte poteter", "Helgemiddag med stekt biff, fløtegratinerte poteter og bearnaise.", 70, "Helgekos", 0, "600 g ytrefilet #k; 1 kg poteter #f; 3 dl fløte #m; 150 g revet ost #m; 1 stk brokkoli #f; 1 pose bearnaisesaus #t"],
+  ["Gryterett", "Lun kjøttgryte med grønnsaker, servert med ris.", 60, "Kjøtt", 0, "600 g grytekjøtt #k; 2 stk løk #f; 4 stk gulrot #f; 1 boks hakkede tomater #h; 1 stk buljongterning #s; 300 g ris #t"],
+  ["Kyllingtaco", "Taco med krydret kylling i stedet for kjøttdeig.", 25, "Kylling", 0, "500 g kyllingfilet #k; 1 pose tacokrydder #s; 8 stk tortillalefser #b; 1 stk isbergsalat #f; 2 stk tomat #f; 1 boks mais #h; 200 g revet ost #m; 1 beger rømme #m"],
+  ["Pølsegrateng", "Barnefavoritten: pølser og makaroni i ostegrateng.", 45, "Hverdagsmiddag", 0, "400 g wienerpølser #k; 250 g makaroni #t; 3 stk egg #m; 5 dl melk #m; 200 g revet ost #m"],
+  ["Kremet pastarett", "Pasta i kremet saus med bacon og sopp.", 25, "Hverdagsmiddag", 1, "400 g pasta #t; 200 g bacon #k; 3 dl matfløte #m; 150 g sjampinjong #f; 1 stk løk #f; 75 g parmesan #m"],
+  ["Kyllinggryte med ris", "Kyllinglår i kremet paprikasaus, servert med ris.", 35, "Kylling", 0, "800 g kyllinglårfilet #k; 2 stk paprika #f; 1 stk løk #f; 3 dl matfløte #m; 1 ss paprikapulver #s; 300 g ris #t"],
+  ["Hamburger", "Hverdagsburger med salat, tomat og dressing.", 25, "Kjøtt", 0, "500 g karbonadedeig #k; 4 stk hamburgerbrød #b; 1 stk isbergsalat #f; 2 stk tomat #f; 1 stk rødløk #f; 4 skive ost #m; 1 stk hamburgerdressing #h"],
+  ["Torsk med bacon", "Ovnsbakt torsk med sprøstekt bacon, poteter og erter.", 35, "Fisk", 0, "600 g torskefilet #k; 150 g bacon #k; 1 kg poteter #f; 400 g erter #z; 50 g smør #m"],
+  ["Kyllingcurry", "Mild curry med kylling og kokosmelk, servert med ris og nanbrød.", 30, "Kylling", 1, "600 g kyllingfilet #k; 1 boks kokosmelk #h; 1 glass mild currypaste #h; 1 stk løk #f; 1 stk paprika #f; 300 g ris #t; 4 stk nanbrød #b"],
+  ["Chili con carne", "Krydret gryte med kjøttdeig og bønner. Enda bedre dagen etter.", 45, "Kjøtt", 0, "500 g kjøttdeig #k; 2 boks hakkede tomater #h; 1 boks kidneybønner #h; 1 stk løk #f; 2 fedd hvitløk #f; 1 ss chilipulver #s; 300 g ris #t; 1 beger rømme #m"],
+  ["Koteletter", "Stekte svinekoteletter med poteter, brokkoli og brun saus.", 30, "Kjøtt", 0, "4 stk svinekoteletter #k; 1 kg poteter #f; 1 stk brokkoli #f; 1 pose brun saus #t"],
+  ["Pulled pork", "Langtidsbakt svinenakke i BBQ-saus, i burgerbrød med coleslaw.", 300, "Helgekos", 0, "1,5 kg svinenakke #k; 1 stk BBQ-saus #h; 4 stk hamburgerbrød #b; 0,5 stk kålhode #f; 2 stk gulrot #f; 1 dl majones #h"],
+  ["Kyllingfilet med ris", "Stekt kyllingfilet med ris, grønnsaker og sweet chili.", 25, "Kylling", 0, "600 g kyllingfilet #k; 300 g ris #t; 1 stk brokkoli #f; 2 stk gulrot #f; 1 stk sweet chili-saus #h"],
+  ["Nachos", "Ovnsnachos med kjøttdeig, ost, salsa og rømme.", 25, "Helgekos", 0, "1 pose nachochips #t; 400 g kjøttdeig #k; 1 pose tacokrydder #s; 1 glass salsa #h; 200 g revet ost #m; 1 beger rømme #m"],
+  ["Grillburgere", "Saftige burgere på grillen med cheddar og sprø salat.", 35, "Grill", 0, "600 g karbonadedeig #k; 4 stk briochebrød #b; 4 skive cheddar #m; 2 stk tomat #f; 1 stk isbergsalat #f; 1 stk hamburgerdressing #h"],
+  ["Grillspyd", "Spyd med kylling og grønnsaker, servert med potetsalat.", 45, "Grill", 0, "600 g kyllingfilet #k; 2 stk paprika #f; 1 stk squash #f; 1 stk rødløk #f; 1 beger potetsalat #a"],
+  ["Hjemmelaget kebab", "Krydret kylling i pitabrød med salat og hvitløksdressing.", 40, "Helgekos", 0, "600 g kyllinglårfilet #k; 1 pose kebabkrydder #s; 4 stk pitabrød #b; 1 stk isbergsalat #f; 2 stk tomat #f; 1 stk agurk #f; 1 stk rødløk #f; 1 stk hvitløksdressing #h"],
+  ["Kjøttdeig i pita", "Rask hverdagsmiddag: krydret kjøttdeig og grønnsaker i pitabrød.", 20, "Hverdagsmiddag", 1, "400 g kjøttdeig #k; 1 pose tacokrydder #s; 6 stk pitabrød #b; 1 stk isbergsalat #f; 1 stk agurk #f; 2 stk tomat #f; 1 stk hvitløksdressing #h"],
+  ["Spaghetti bolognese", "Kjøttsaus med tomat og spaghetti. Alltid en vinner.", 30, "Hverdagsmiddag", 0, "500 g kjøttdeig #k; 2 boks hakkede tomater #h; 1 stk løk #f; 2 fedd hvitløk #f; 2 stk gulrot #f; 400 g spaghetti #t; 75 g parmesan #m"],
+  ["Pannekaker med bacon", "Tykke pannekaker med sprøstekt bacon og blåbærsyltetøy.", 35, "Hverdagsmiddag", 0, "4 dl hvetemel #t; 7 dl melk #m; 4 stk egg #m; 300 g bacon #k; 1 glass blåbærsyltetøy #h; 50 g smør #m"],
+  ["Tomatsuppe med egg", "Tomatsuppe med makaroni og kokte egg.", 20, "Suppe", 0, "2 boks hakkede tomater #h; 1 stk buljongterning #s; 100 g makaroni #t; 4 stk egg #m; 1 stk løk #f; 2 dl matfløte #m"],
+  ["Kremet kyllingsuppe", "Fyldig suppe med kylling, grønnsaker og fløte. Godt med brød til.", 30, "Suppe", 0, "400 g kyllingfilet #k; 3 stk gulrot #f; 1 stk purre #f; 400 g poteter #f; 3 dl matfløte #m; 2 stk buljongterning #s; 1 stk loff #b"],
+  ["Grønnsakswok med nudler", "Vegetarwok med eggnudler, grønnsaker og cashewnøtter.", 20, "Vegetar", 0, "250 g eggnudler #t; 600 g wokgrønnsaker #z; 1 glass woksaus #h; 100 g cashewnøtter #t; 4 stk egg #m"],
+  ["Vegetarlasagne", "Lasagne med linser og grønnsaker i stedet for kjøtt.", 70, "Vegetar", 0, "200 g røde linser #t; 2 boks hakkede tomater #h; 1 stk squash #f; 1 stk paprika #f; 1 pk lasagneplater #t; 5 dl melk #m; 50 g smør #m; 200 g revet ost #m"],
+  ["Pølser med lompe", "Grillpølser med lompe, sennep, ketchup og sprøstekt løk.", 15, "Grill", 0, "8 stk grillpølser #k; 1 pk lomper #b; 1 stk sennep #h; 1 stk ketchup #h; 1 pk sprøstekt løk #t"],
+  ["Fårikål", "Høstklassikeren med fårekjøtt og kål som får godgjøre seg lenge.", 150, "Helgekos", 0, "1,5 kg fårikålkjøtt #k; 1 stk kålhode #f; 1 ss hel pepper #s; 1 kg poteter #f"],
+];
+
+/* ---------- små hjelpere ---------- */
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+const pad = n => String(n).padStart(2, "0");
+const ymd = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const parseYmd = s => { const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d); };
+const addDays = (d, n) => { const x = new Date(d.getFullYear(), d.getMonth(), d.getDate()); x.setDate(x.getDate() + n); return x; };
+const mondayOf = d => addDays(d, -((d.getDay() + 6) % 7));
+const weekdayIdx = d => (d.getDay() + 6) % 7;   // 0 = mandag
+const todayStr = () => ymd(new Date());
+const weekDates = mon => Array.from({ length: 7 }, (_, i) => ymd(addDays(mon, i)));
+function isoWeek(d){
+  const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+  const day = t.getUTCDay() || 7;
+  t.setUTCDate(t.getUTCDate() + 4 - day);
+  const y0 = new Date(Date.UTC(t.getUTCFullYear(), 0, 1));
+  return { year: t.getUTCFullYear(), week: Math.ceil(((t - y0) / 864e5 + 1) / 7) };
+}
+const weekKey = mon => { const w = isoWeek(mon); return `${w.year}-W${pad(w.week)}`; };
+const fmtShort = d => `${d.getDate()}. ${MONTHS[d.getMonth()]}`;
+const num = n => String(+(+n).toFixed(2)).replace(".", ",");
+const parseNum = s => { const n = parseFloat(String(s).replace(",", ".")); return isFinite(n) ? n : 0; };
+const clampInt = (v, lo, hi, def) => { const n = Math.round(Number(v)); return isFinite(n) && n >= lo && n <= hi ? n : def; };
+
+/* ---------- datamodell ---------- */
+function parseIng(s){
+  const m = String(s).trim().match(/^([\d.,]+)\s+(\S+)\s+(.+?)\s+#(\w)$/);
+  if (!m) return { qty: 0, unit: "stk", name: String(s).trim(), section: "Annet" };
+  return { qty: parseNum(m[1]), unit: m[2], name: m[3], section: SEC_CODE[m[4]] || "Annet" };
+}
+function seed(){
+  return {
+    settings: { persons: 3 },
+    recipes: SEED.map(([name, desc, time, category, fav, ings], i) => ({
+      id: "r" + pad(i + 1), name, desc, time, category, servings: 4, favorite: !!fav,
+      ingredients: ings.split(";").map(parseIng),
+    })),
+    plan: {},
+    extras: {},
+  };
+}
+function cleanIng(g){
+  return {
+    qty: Math.max(0, parseNum(g && g.qty)),
+    unit: UNITS.includes(g && g.unit) ? g.unit : "stk",
+    name: String((g && g.name) || "").trim(),
+    section: SECTIONS.includes(g && g.section) ? g.section : "Annet",
+  };
+}
+function cleanRecipe(r){
+  return {
+    id: String(r.id || uid()),
+    name: String(r.name).trim(),
+    desc: String(r.desc || "").trim(),
+    time: clampInt(r.time, 1, 1440, 30),
+    category: CATS.includes(r.category) ? r.category : "Hverdagsmiddag",
+    servings: clampInt(r.servings, 1, 20, 4),
+    favorite: !!r.favorite,
+    ingredients: (Array.isArray(r.ingredients) ? r.ingredients : []).map(cleanIng).filter(g => g.name),
+  };
+}
+function validate(d){
+  if (!d || typeof d !== "object" || !Array.isArray(d.recipes)) throw new Error("Filen er ikke data fra Middags panikk.");
+  const recipes = d.recipes.filter(r => r && String(r.name || "").trim()).map(cleanRecipe);
+  const plan = {};
+  for (const [k, v] of Object.entries(d.plan && typeof d.plan === "object" ? d.plan : {})) {
+    if (!/^\d{4}-\d\d-\d\d$/.test(k) || !v || !String(v.name || "").trim()) continue;
+    plan[k] = { recipeId: String(v.recipeId || ""), name: String(v.name).trim(), category: CATS.includes(v.category) ? v.category : "",
+      time: clampInt(v.time, 0, 1440, 0), persons: Number(v.persons) === 4 ? 4 : 3 };
+  }
+  const extras = {};
+  for (const [k, v] of Object.entries(d.extras && typeof d.extras === "object" ? d.extras : {})) {
+    if (!/^\d{4}-W\d\d$/.test(k) || !Array.isArray(v)) continue;
+    const list = v.filter(x => x && String(x.name || "").trim()).map(x => ({ id: String(x.id || uid()), name: String(x.name).trim() }));
+    if (list.length) extras[k] = list;
+  }
+  return { settings: { persons: Number(d.settings && d.settings.persons) === 4 ? 4 : 3 }, recipes, plan, extras };
+}
+const fileText = d => JSON.stringify({ app: APP_NAME, appVersion: APP_VERSION, updated: new Date().toISOString(), version: 1,
+  settings: d.settings, recipes: d.recipes, plan: d.plan, extras: d.extras }, null, 2) + "\n";
+
+let db = { settings: { persons: 3 }, recipes: [], plan: {}, extras: {} };
+
+/* ---------- lagring på enheten ---------- */
+const ls = {
+  get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } },
+  set(k, v){ try{ localStorage.setItem(k, v); return true; }catch(e){ return false; } },
+  del(k){ try{ localStorage.removeItem(k); }catch(e){} },
+};
+let token = ls.get(TOKEN_KEY) || "";
+const canEdit = () => !!token;
+let sync = (() => { try{ return JSON.parse(ls.get(SYNC_KEY) || "{}") || {}; }catch(e){ return {}; } })();
+const saveSync = () => ls.set(SYNC_KEY, JSON.stringify(sync));
+let loadState = "loading", loadError = "", syncState = "", syncMsg = "", changeNo = 0;
+function readCache(){ try{ const raw = ls.get(CACHE_KEY); return raw ? validate(JSON.parse(raw)) : null; }catch(e){ return null; } }
+function writeCache(){ if (!ls.set(CACHE_KEY, JSON.stringify(db))) toast("Klarte ikke å lagre på enheten (fullt lager?)"); }
+
+/* ---------- GitHub ---------- */
+const API = `https://api.github.com/repos/${GH.owner}/${GH.repo}`;
+function ghHeaders(t = token){ const h = { Accept: "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28" }; if (t) h.Authorization = "Bearer " + t; return h; }
+function b64encode(str){ const b = new TextEncoder().encode(str); let out = ""; for (let i = 0; i < b.length; i += 0x8000) out += String.fromCharCode.apply(null, b.subarray(i, i + 0x8000)); return btoa(out); }
+function b64decode(b64){ const x = atob(String(b64).replace(/\s/g, "")); const b = new Uint8Array(x.length); for (let i = 0; i < x.length; i++) b[i] = x.charCodeAt(i); return new TextDecoder().decode(b); }
+async function httpErr(r){
+  let m = ""; try{ m = (await r.json()).message || ""; }catch(e){}
+  const e = new Error(
+    r.status === 401 ? "GitHub-nøkkelen er ugyldig eller utløpt. Lås opp på nytt med en ny nøkkel." :
+    r.status === 403 && /rate limit/i.test(m) ? "GitHub har midlertidig sperret for mange forespørsler. Prøv igjen om litt." :
+    r.status === 403 ? `Nøkkelen mangler skrivetilgang. Den må ha «Contents: Read and write» for ${GH.repo}.` :
+    r.status === 404 ? `Nøkkelen har ikke tilgang til repoet ${GH.repo}.` : `GitHub svarte ${r.status}${m ? ": " + m : ""}`);
+  e.status = r.status; e.auth = r.status === 401; e.msg = m;
+  return e;
+}
+/* Henter data: { data, sha } – data er null hvis filen ikke finnes ennå */
+async function fetchRemote(){
+  let r;
+  try{ r = await fetch(`${API}/contents/${GH.path}?ref=${GH.branch}`, { headers: ghHeaders(), cache: "no-store" }); }catch(e){ r = null; }
+  if (r && r.status === 404 && !canEdit()) r = null;              // prøv også Pages-kopien
+  if (r && r.status === 404) return { data: null, sha: null, missing: true };
+  if (r && r.status === 401 && canEdit()) throw await httpErr(r);
+  if (r && r.ok){ const j = await r.json(); return { data: validate(JSON.parse(b64decode(j.content))), sha: j.sha }; }
+  // reserve: filen slik GitHub Pages serverer den (kan være noen minutter gammel)
+  const p = await fetch(`./${GH.path}?t=${Date.now()}`, { cache: "no-store" });
+  if (p.status === 404) return { data: null, sha: null, missing: true };
+  if (!p.ok) throw new Error("Fikk ikke hentet middagsplanen (" + p.status + ").");
+  return { data: validate(await p.json()), sha: null, fromPages: true };
+}
+async function load(){
+  const cached = readCache();
+  if (cached){ db = cached; loadState = "ok"; }
+  refresh();
+  try{
+    const rem = await fetchRemote();
+    if (canEdit() && sync.dirty && cached){
+      // endringer på denne enheten ble ikke lastet opp sist
+      if (rem.missing || !rem.sha || rem.sha === sync.sha){ loadState = "ok"; refresh(); save(); return; }
+      const mine = await confirmBox("Ulagrede endringer", "Denne enheten har endringer som ikke ble lagret, og planen på nettet er endret siden. Vil du beholde endringene fra denne enheten?", "Behold mine", false, "Bruk den på nettet");
+      if (mine){ sync.sha = rem.sha; saveSync(); loadState = "ok"; refresh(); save(); return; }
+    }
+    if (rem.data) db = rem.data; else if (!cached) db = seed();
+    if (rem.sha) sync.sha = rem.sha;
+    sync.dirty = false; saveSync(); writeCache(); loadState = "ok";
+    if (canEdit() && rem.missing) save();                          // første lagring lager filen
+  }catch(e){
+    if (e.auth){ lockOut(e.message); return load(); }
+    if (loadState === "ok") toast("Viser lagret kopi – fikk ikke kontakt med GitHub");
+    else { db = seed(); loadState = "ok"; toast("Fikk ikke kontakt med GitHub – viser standardrettene"); }
+  }
+  refresh();
+}
+
+/* Lagrer på enheten straks, og til GitHub litt etter siste endring (så mange klikk blir én lagring) */
+const SAVE_DELAY = 60000;
+let pushT = null, pushing = false, pushAgain = false;
+function save(){
+  writeCache();
+  if (!canEdit()) return;
+  changeNo++; sync.dirty = true; saveSync(); if (!pushing) setSync("pending");
+  clearTimeout(pushT); pushT = setTimeout(pushNow, SAVE_DELAY);
+}
+async function pushNow(){
+  clearTimeout(pushT);
+  if (!canEdit() || !sync.dirty) return;
+  if (pushing){ pushAgain = true; return; }
+  pushing = true; setSync("saving");
+  const n = changeNo;
+  try{
+    if (!sync.sha){
+      const g = await fetch(`${API}/contents/${GH.path}?ref=${GH.branch}`, { headers: ghHeaders(), cache: "no-store" });
+      if (g.ok) sync.sha = (await g.json()).sha; else if (g.status !== 404) throw await httpErr(g);
+    }
+    const body = { message: `Oppdater middagsplan (${APP_NAME} ${APP_VERSION})`, content: b64encode(fileText(db)), branch: GH.branch };
+    if (sync.sha) body.sha = sync.sha;
+    const r = await fetch(`${API}/contents/${GH.path}`, { method: "PUT", headers: { ...ghHeaders(), "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    if (!r.ok){
+      const e = await httpErr(r);
+      if (r.status === 409 || (r.status === 422 && /sha/i.test(e.msg))) { await conflict(); return; }
+      throw e;
+    }
+    sync.sha = (await r.json()).content.sha;
+    if (changeNo === n) sync.dirty = false; else pushAgain = true;
+    saveSync(); setSync(sync.dirty ? "saving" : "ok");
+  }catch(e){
+    if (e.auth) lockOut(e.message);
+    else setSync("error", e.message || "Ingen kontakt med GitHub");
+  }finally{
+    pushing = false;
+    if (pushAgain){ pushAgain = false; if (sync.dirty && canEdit()) pushNow(); }
+  }
+}
+/* GitHub har en nyere versjon enn den denne enheten bygde på */
+async function conflict(){
+  let rem;
+  try{ rem = await fetchRemote(); }catch(e){ setSync("error", e.message); return; }
+  const mine = await confirmBox("Planen er endret et annet sted", "Det er lagret en nyere versjon fra en annen enhet. Vil du overskrive den med det du har her?", "Overskriv", false, "Bruk den nyeste");
+  sync.sha = rem.sha;
+  if (mine) { saveSync(); pushAgain = true; return; }
+  if (rem.data) db = rem.data;
+  sync.dirty = false; saveSync(); writeCache(); setSync("ok"); refresh();
+}
+function setSync(state, msg = ""){ syncState = state; syncMsg = msg; drawLock(); }
+
+/* ---------- lås ---------- */
+function lockHtml(){
+  const st = !canEdit() ? "" :
+    syncState === "error" ? `<button class="sync err" data-act="retrySync" title="${esc(syncMsg)}">⚠️ <span class="lbl">Ikke lagret – </span>prøv igjen</button>` :
+    syncState === "pending" ? '<button class="savebtn" data-act="saveNow" title="Lagres automatisk etter 1 minutt uten endringer">💾 <span class="lbl">Lagre nå</span></button>' :
+    syncState === "saving" ? '<span class="sync">Lagrer…</span>' : syncState === "ok" ? '<span class="sync ok">✓<span class="lbl"> Lagret</span></span>' : "";
+  return st + ` <button class="lockbtn${canEdit() ? " on" : ""}" data-act="lock" aria-label="${canEdit() ? "Redigering er på. Trykk for å låse" : "Lås opp redigering"}">${canEdit() ? "🔓<span class=\"lbl\"> Redigerer</span>" : "🔒<span class=\"lbl\"> Lås opp</span>"}</button>`;
+}
+function drawLock(){
+  document.body.classList.toggle("ro", !canEdit());
+  const el = $("#lockTop"); if (el) el.innerHTML = lockHtml();
+}
+function lockOut(msg){ token = ""; ls.del(TOKEN_KEY); clearTimeout(pushT); syncState = ""; toast(msg || "🔒 Redigering er låst"); drawLock(); refresh(); }
+async function verifyToken(t){
+  let r;
+  try{ r = await fetch(API, { headers: ghHeaders(t), cache: "no-store" }); }catch(e){ throw new Error("Fikk ikke kontakt med GitHub. Sjekk nettet."); }
+  if (!r.ok) throw await httpErr(r);
+  const j = await r.json();
+  if (j.permissions && j.permissions.push === false) throw new Error("Brukeren bak nøkkelen har ikke skrivetilgang til repoet.");
+}
+function unlockForm(){
+  openModal(`<button class="mclose" data-close aria-label="Lukk">✕</button><h2>🔒 Lås opp redigering</h2>
+    <p class="muted">Alle kan se middagsplanen. For å endre den trenger du en GitHub-nøkkel med skrivetilgang til repoet. Nøkkelen lagres bare på denne enheten.</p>
+    <ol class="steps">
+      <li>Åpne <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">GitHub → ny fine-grained token</a></li>
+      <li>Repository access: <b>Only select repositories</b> → <b>${esc(GH.repo)}</b></li>
+      <li>Permissions → Repository permissions → <b>Contents: Read and write</b></li>
+      <li>Trykk <b>Generate token</b>, kopier og lim inn her</li>
+    </ol>
+    <form class="form" id="tf" novalidate><div class="field full"><label for="tok">GitHub-nøkkel</label>
+      <input id="tok" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="github_pat_…" autofocus></div></form>
+    <p class="muted" id="tokMsg" role="alert" style="min-height:1.4em;margin:8px 0 0"></p>
+    <div class="acts"><button class="btn" data-close>Avbryt</button><button class="btn pri" form="tf" type="submit" id="tokBtn">Lås opp</button></div>`,
+  (m, close) => {
+    const msg = $("#tokMsg", m), btn = $("#tokBtn", m);
+    $("#tf", m).onsubmit = async e => {
+      e.preventDefault();
+      const t = $("#tok", m).value.trim();
+      if (!t) { msg.textContent = "Lim inn nøkkelen først."; return; }
+      btn.disabled = true; msg.style.color = ""; msg.textContent = "Sjekker nøkkelen…";
+      try{
+        await verifyToken(t);
+        token = t; ls.set(TOKEN_KEY, t); close(); drawLock();
+        toast("🔓 Redigering er slått på for denne enheten");
+        await afterUnlock();
+      }catch(err){ msg.style.color = "var(--danger)"; msg.textContent = err.message; btn.disabled = false; }
+    };
+  });
+}
+async function afterUnlock(){
+  let rem;
+  try{ rem = await fetchRemote(); }catch(e){ if (e.auth) return lockOut(e.message); toast(e.message); return; }
+  sync.sha = rem.sha; sync.dirty = false; saveSync();
+  if (rem.data) db = rem.data;
+  writeCache(); refresh();
+  if (rem.missing) save(); else setSync("ok");
+}
+
+/* ---------- oppslag ---------- */
+const recipeById = id => id ? db.recipes.find(r => r.id === id) : undefined;
+/* planlagt middag, med oppdaterte verdier fra retten hvis den finnes */
+function entryView(e){
+  if (!e) return null;
+  const r = recipeById(e.recipeId);
+  return r ? { ...e, name: r.name, category: r.category, time: r.time, recipe: r } : { ...e, recipe: null };
+}
+const isKos = e => e.category === "Helgekos" || e.category === "Grill" || (e.time || 0) > 45;
+function usesOf(id){ return Object.keys(db.plan).filter(k => db.plan[k].recipeId === id && k <= todayStr()).sort(); }
+function setPlan(ds, r, persons){
+  db.plan[ds] = { recipeId: r.id, name: r.name, category: r.category, time: r.time, persons: persons === 4 ? 4 : 3 };
+}
+function setPlanText(ds, text, persons){
+  db.plan[ds] = { recipeId: "", name: text, category: "", time: 0, persons: persons === 4 ? 4 : 3 };
+}
+
+/* ---------- smarte forslag ----------
+   Hverdager: rask mat (≤ 30 min) får plusspoeng, lang tid og helgekos minus.
+   Helg: helgekos, grill og retter som tar tid får plusspoeng.
+   Aldri samme rett dagen før eller etter. Helst ikke samme rett to ganger i uka.
+   Maks én fiskemiddag per uke. Grill mest i sesong (mai–sep). Nylig brukte retter trekkes ned. */
+function candidates(ds, getId, exclude = ""){
+  const d = parseYmd(ds), wd = weekdayIdx(d), weekend = wd >= 5;
+  const prevId = getId(ymd(addDays(d, -1))), nextId = getId(ymd(addDays(d, 1)));
+  const mon = mondayOf(d), monStr = ymd(mon);
+  const weekIds = weekDates(mon).filter(x => x !== ds).map(getId).filter(Boolean);
+  const fishInWeek = weekIds.some(id => (recipeById(id) || {}).category === "Fisk");
+  const prevCat = (recipeById(prevId) || {}).category;
+  const from = ymd(addDays(mon, -28));
+  const recent = {};
+  for (const [k, e] of Object.entries(db.plan)) if (k >= from && k < monStr && e.recipeId) recent[e.recipeId] = (recent[e.recipeId] || 0) + 1;
+  const m = d.getMonth();
+  const grillSeason = m >= 4 && m <= 8;
+  const out = [];
+  for (const r of db.recipes){
+    if (r.id === prevId || r.id === nextId || r.id === exclude) continue;
+    let s = 0;
+    if (!weekend){
+      if (r.time <= FAST) s += 4; else if (r.time > 45) s -= 4;
+      if (r.category === "Helgekos") s -= 3;
+    } else {
+      if (r.category === "Helgekos") s += 4;
+      if (r.category === "Grill") s += 2;
+      if (r.time >= 40) s += 2; else if (r.time <= 20) s -= 1;
+    }
+    if (r.category === "Grill" && !grillSeason) s -= 3;
+    if (r.favorite) s += 1.5;
+    if (r.category === "Fisk") s -= 1;
+    if (r.category === "Fisk" && fishInWeek) s -= 10;
+    if (weekIds.includes(r.id)) s -= 8;
+    if (prevCat && prevCat === r.category) s -= 1.5;
+    s -= 2 * (recent[r.id] || 0);
+    out.push({ r, s });
+  }
+  return out.sort((a, b) => b.s - a.s);
+}
+/* trekker blant de beste, så forslagene varierer */
+function pickFor(ds, getId, exclude){
+  const list = candidates(ds, getId, exclude).slice(0, 5).map(x => ({ ...x, j: x.s + Math.random() * 2.5 }));
+  list.sort((a, b) => b.j - a.j);
+  return list[0] ? list[0].r : null;
+}
+const planGetId = ds => (db.plan[ds] || {}).recipeId || "";
+
+/* ---------- handleliste ---------- */
+const FAM = u => (u === "g" || u === "kg") ? "g" : (u === "dl" || u === "l") ? "dl" : u;
+const toBase = (q, u) => u === "kg" ? q * 1000 : u === "l" ? q * 10 : q;
+function fmtQty(q, u){
+  if (!q) return "";
+  if (u === "g") return q >= 1000 ? num(Math.round(q / 100) / 10) + " kg" : num(q < 100 ? Math.ceil(q / 5 - 1e-9) * 5 : Math.ceil(q / 10 - 1e-9) * 10) + " g";
+  if (u === "dl") return q >= 10 ? num(Math.round(q) / 10) + " l" : num(Math.ceil(q * 2 - 1e-9) / 2) + " dl";
+  if (["ss", "ts", "fedd"].includes(u)) return num(Math.max(0.5, Math.ceil(q * 2 - 1e-9) / 2)) + " " + u;
+  return num(Math.max(1, Math.ceil(q - 1e-9))) + " " + u;   // stk, pk, pose, boks … kjøpes hele
+}
+function buildShop(days){
+  const map = new Map();
+  for (const ds of days){
+    const e = db.plan[ds]; if (!e) continue;
+    const r = recipeById(e.recipeId); if (!r) continue;
+    const f = (e.persons || 3) / (r.servings || 4);
+    for (const g of r.ingredients){
+      const fam = FAM(g.unit), key = g.name.toLowerCase() + "|" + fam;
+      let it = map.get(key);
+      if (!it){ it = { key, name: g.name, unit: fam, qty: 0, section: g.section, from: [] }; map.set(key, it); }
+      it.qty += toBase(g.qty, g.unit) * f;
+      if (!it.from.includes(r.name)) it.from.push(r.name);
+    }
+  }
+  return [...map.values()];
+}
+function shopState(){ try{ return JSON.parse(ls.get(SHOP_KEY) || "{}") || {}; }catch(e){ return {}; } }
+function saveShopState(s){
+  const keys = Object.keys(s).sort();
+  while (keys.length > 10) delete s[keys.shift()];   // husk bare de siste ukene
+  ls.set(SHOP_KEY, JSON.stringify(s));
+}
+function shopFor(wk){ const s = shopState(); return s[wk] || { c: [], off: [] }; }
+function setShopFor(wk, v){ const s = shopState(); s[wk] = v; saveShopState(s); }
+
+/* ---------- tilstand for visningen ---------- */
+let view = "uke";
+let weekStart = mondayOf(new Date());
+const rf = { q: "", cat: "", fav: false, sort: "navn" };   // filter for oppskrifter
+const ff = { q: "", cat: "" };                               // filter for favoritter
+let statsPeriod = "12m";
+let shopHide = false;
+
+const ICONS = {
+  uke: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="3"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></svg>',
+  oppskrifter: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5M9 8h7M9 12h5"/></svg>',
+  favoritter: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg>',
+  handleliste: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2.5l2.2 11h10.8L21 7.5H7"/><circle cx="9.5" cy="19.5" r="1.5"/><circle cx="17" cy="19.5" r="1.5"/></svg>',
+  statistikk: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>',
+};
+const VIEWS = [["uke", "Ukeplan", "Uke"], ["oppskrifter", "Oppskrifter", "Retter"], ["favoritter", "Favoritter", "Favoritter"], ["handleliste", "Handleliste", "Handle"], ["statistikk", "Statistikk", "Statistikk"]];
+const SEARCH_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>';
+
+function drawNav(){
+  $("#tabs").innerHTML = VIEWS.map(([k, long]) => `<a class="tab${view === k ? " on" : ""}" href="#/${k}">${ICONS[k]}${long}</a>`).join("");
+  $("#bottom").innerHTML = VIEWS.map(([k, , short]) => `<a class="navbtn${view === k ? " on" : ""}" href="#/${k}" aria-label="${short}">${ICONS[k]}<span>${short}</span></a>`).join("");
+}
+function route(){
+  const h = (location.hash.replace(/^#\/?/, "").split("/")[0] || "uke");
+  view = VIEWS.some(v => v[0] === h) ? h : "uke";
+  refresh();
+  window.scrollTo(0, 0);
+}
+function refresh(){
+  drawNav(); drawLock();
+  const main = $("#main");
+  if (loadState === "loading" && !db.recipes.length){ main.innerHTML = '<div class="loading">Laster middagene…</div>'; return; }
+  const fn = { uke: viewWeek, oppskrifter: viewRecipes, favoritter: viewFavs, handleliste: viewShop, statistikk: viewStats }[view];
+  main.innerHTML = fn();
+  if (view === "oppskrifter" || view === "favoritter") drawGrid();
+}
+
+/* ---------- ukeplan ---------- */
+function weekNavHtml(){
+  const w = isoWeek(weekStart), end = addDays(weekStart, 6);
+  const isNow = ymd(weekStart) === ymd(mondayOf(new Date()));
+  return `<div class="weeknav">
+    <button class="iconbtn" data-act="week" data-d="-1" aria-label="Forrige uke">‹</button>
+    <div class="wk">Uke ${w.week}<small>${fmtShort(weekStart)} – ${fmtShort(end)}</small></div>
+    <button class="iconbtn" data-act="week" data-d="1" aria-label="Neste uke">›</button>
+    ${isNow ? "" : '<button class="btn sm" data-act="week" data-d="0">I dag</button>'}
+  </div>`;
+}
+function viewWeek(){
+  const t = todayStr();
+  const days = weekDates(weekStart).map((ds, i) => {
+    const e = entryView(db.plan[ds]);
+    const d = parseYmd(ds);
+    const cls = ["day", i >= 5 ? "weekend" : "", ds === t ? "today" : "", ds < t ? "past" : ""].join(" ");
+    let body;
+    if (e){
+      body = `<button class="meal" data-act="openDay" data-date="${ds}">
+          <span class="mi" style="--c:${catColor(e.category)}">${e.recipe ? catIcon(e.category) : "📝"}</span>
+          <span class="mt"><b>${esc(e.name)}</b>
+          ${e.recipe ? `<span class="tag"><span class="dot" style="--c:${catColor(e.category)}"></span>${esc(e.category)} · ${e.time} min</span>` : '<span class="tag">Uten oppskrift</span>'}</span>
+        </button>
+        <footer>
+          <button class="pp${e.persons === 4 ? " four" : ""}" data-act="persons" data-date="${ds}" title="Antall personer" ${canEdit() ? "" : "disabled"}>👤 ${e.persons}</button>
+          <span class="sp"></span>
+          <button class="mini eo" data-act="reroll" data-date="${ds}" title="Nytt forslag" aria-label="Nytt forslag">🎲</button>
+          <button class="mini eo" data-act="clearDay" data-date="${ds}" title="Fjern" aria-label="Fjern middag">✕</button>
+        </footer>`;
+    } else {
+      body = canEdit()
+        ? `<button class="add" data-act="openDay" data-date="${ds}">＋ Legg til middag</button>`
+        : '<div class="noplan">Ikke planlagt</div>';
+    }
+    return `<article class="${cls}">
+      <header><span class="dn">${DAY_NAMES[i]}</span>${ds === t ? '<span class="now">I dag</span>' : `<span class="dd">${fmtShort(d)}</span>`}</header>
+      ${body}</article>`;
+  }).join("");
+  const dates = weekDates(weekStart);
+  const planned = dates.filter(ds => db.plan[ds]);
+  const fast = dates.slice(0, 5).filter(ds => { const e = entryView(db.plan[ds]); return e && e.recipe && e.time <= FAST; }).length;
+  const items = buildShop(dates).length + (db.extras[weekKey(weekStart)] || []).length;
+  return `<div class="vhead">
+      <div><h1>Ukeplan</h1><p class="muted">Middag for familien Kile – vanligvis 3, av og til 4.</p></div>
+      <div class="weeknav">${weekNavHtml()}<button class="btn pri eo" data-act="propose">✨ Foreslå ukemeny</button></div>
+    </div>
+    <div class="days">${days}</div>
+    <div class="summary">
+      <div class="card"><span class="big">${planned.length}/7</span><span class="muted">dager planlagt</span></div>
+      <div class="card"><span class="big">${fast}</span><span class="muted">raske hverdagsmiddager (≤ ${FAST} min)</span></div>
+      <a class="card" href="#/handleliste" style="text-decoration:none;color:inherit"><span class="big">🛒 ${items}</span><span class="muted">varer på handlelisten →</span></a>
+    </div>`;
+}
+function dayForm(ds){
+  const d = parseYmd(ds), wd = weekdayIdx(d);
+  const cur = db.plan[ds];
+  let persons = cur ? cur.persons : db.settings.persons;
+  const getId = x => x === ds ? "" : planGetId(x);
+  const scored = candidates(ds, getId);
+  const score = new Map(scored.map(x => [x.r.id, x.s]));
+  const sugg = scored.slice(0, 3).map(x => x.r);
+  let q = "";
+  openModal(`<button class="mclose" data-close aria-label="Lukk">✕</button>
+    <h2>${DAY_NAMES[wd]} ${fmtShort(d)}</h2>
+    <p class="muted" style="margin:0">${wd >= 5 ? "Helg – kosemat og retter som får ta tid passer fint." : `Hverdag – raske retter (≤ ${FAST} min) står først.`}</p>
+    <div class="lbl-row"><b>Antall personer</b><div class="seg" id="ps"><button data-p="3">3</button><button data-p="4">4</button></div></div>
+    ${sugg.length ? `<div class="sugg">${sugg.map(r => `<button data-pick="${r.id}">${catIcon(r.category)} ${esc(r.name)}<small>${r.time} min · ${esc(r.category)}</small></button>`).join("")}</div>` : ""}
+    <div class="search" style="margin-top:14px">${SEARCH_ICON}<input type="search" id="dq" placeholder="Søk etter rett…" aria-label="Søk etter rett"></div>
+    <div class="pick-list" id="pl"></div>
+    <div class="lbl-row"><b>Noe annet?</b></div>
+    <form class="freetext" id="ftf"><input id="ft" maxlength="80" placeholder="F.eks. rester, spise ute, bursdag" value="${cur && !cur.recipeId ? esc(cur.name) : ""}"><button class="btn" type="submit">Bruk</button></form>
+    <div class="acts">${cur ? '<button class="btn danger grow" id="rm">Fjern middag</button>' : ""}<button class="btn" data-close>Lukk</button></div>`,
+  (m, close) => {
+    const drawPs = () => $$("#ps button", m).forEach(b => b.classList.toggle("on", +b.dataset.p === persons));
+    drawPs();
+    $("#ps", m).onclick = e => { const b = e.target.closest("button"); if (!b) return; persons = +b.dataset.p; drawPs(); };
+    const drawList = () => {
+      const s = q.trim().toLowerCase();
+      const list = db.recipes.filter(r => !s || r.name.toLowerCase().includes(s) || r.category.toLowerCase().includes(s))
+        .sort((a, b) => (score.has(b.id) ? score.get(b.id) : -99) - (score.has(a.id) ? score.get(a.id) : -99) || a.name.localeCompare(b.name, "no"));
+      $("#pl", m).innerHTML = list.map(r => {
+        const off = !score.has(r.id);
+        return `<button class="pick${cur && cur.recipeId === r.id ? " cur" : ""}${off ? " off" : ""}" data-pick="${r.id}">
+          <span class="ricon" style="--c:${catColor(r.category)}">${catIcon(r.category)}</span>
+          <span class="pb"><b>${esc(r.name)}${r.favorite ? " ★" : ""}</b><small>${r.time} min · ${esc(r.category)}${off ? " · samme som dagen før/etter" : ""}</small></span>
+          ${r.time <= FAST ? '<span class="pill fast">Rask</span>' : ""}</button>`;
+      }).join("") || '<p class="muted">Ingen treff.</p>';
+    };
+    drawList();
+    $("#dq", m).oninput = e => { q = e.target.value; drawList(); };
+    m.addEventListener("click", e => {
+      const b = e.target.closest("[data-pick]"); if (!b) return;
+      const r = recipeById(b.dataset.pick); if (!r) return;
+      setPlan(ds, r, persons); save(); close(); refresh();
+      toast(`${catIcon(r.category)} ${r.name} på ${DAY_NAMES[wd].toLowerCase()}`);
+    });
+    $("#ftf", m).onsubmit = e => {
+      e.preventDefault();
+      const t = $("#ft", m).value.trim(); if (!t) return;
+      setPlanText(ds, t, persons); save(); close(); refresh();
+    };
+    const rm = $("#rm", m);
+    if (rm) rm.onclick = () => { close(); clearDay(ds); };
+  });
+}
+function clearDay(ds){
+  const old = db.plan[ds]; if (!old) return;
+  delete db.plan[ds]; save(); refresh();
+  toast(`Fjernet ${old.name}`, () => { db.plan[ds] = old; save(); refresh(); });
+}
+function reroll(ds){
+  const cur = db.plan[ds];
+  const getId = x => x === ds ? "" : planGetId(x);
+  const r = pickFor(ds, getId, cur ? cur.recipeId : "");
+  if (!r) return toast("Fant ingen andre retter som passer");
+  setPlan(ds, r, cur ? cur.persons : db.settings.persons); save(); refresh();
+  toast(`🎲 ${r.name}`, () => { if (cur) db.plan[ds] = cur; else delete db.plan[ds]; save(); refresh(); });
+}
+function proposeForm(){
+  const dates = weekDates(weekStart);
+  let overwrite = false;
+  let map = {};
+  const getId = ds => (ds in map) ? map[ds] : planGetId(ds);
+  const build = () => {
+    map = {};
+    for (const ds of dates){
+      if (!overwrite && db.plan[ds]) continue;
+      map[ds] = "";
+      const r = pickFor(ds, getId);
+      map[ds] = r ? r.id : "";
+    }
+  };
+  const rerollOne = ds => { const old = map[ds]; map[ds] = ""; const r = pickFor(ds, getId, old); map[ds] = r ? r.id : old; };
+  build();
+  openModal(`<button class="mclose" data-close aria-label="Lukk">✕</button>
+    <h2>✨ Foreslå ukemeny</h2>
+    <p class="muted" style="margin:0">Uke ${isoWeek(weekStart).week}. Raske retter på hverdager, kosemat i helgen, ingen rett to dager på rad. Trykk 🎲 for å bytte en dag.</p>
+    <label class="check" style="margin-top:12px"><input type="checkbox" id="ow"> Erstatt også dager som allerede er planlagt</label>
+    <div class="prop" id="prop"></div>
+    <div class="acts"><button class="btn grow" id="again">🔄 Nytt forslag</button><button class="btn" data-close>Avbryt</button><button class="btn pri" id="ok">Bruk forslaget</button></div>`,
+  (m, close) => {
+    const draw = () => {
+      $("#prop", m).innerHTML = dates.map((ds, i) => {
+        const d = parseYmd(ds);
+        if (!(ds in map)){
+          const e = entryView(db.plan[ds]);
+          return `<div class="prop-row keep"><span class="pd">${DAY_SHORT[i]}<small>${fmtShort(d)}</small></span><span class="pn"><b>${esc(e.name)}</b><small>Beholdes</small></span></div>`;
+        }
+        const r = recipeById(map[ds]);
+        return `<div class="prop-row"><span class="pd">${DAY_SHORT[i]}<small>${fmtShort(d)}</small></span>
+          <span class="ricon" style="--c:${catColor(r ? r.category : "")};width:36px;height:36px;font-size:1.1rem">${r ? catIcon(r.category) : "–"}</span>
+          <span class="pn"><b>${r ? esc(r.name) : "Ingen forslag"}</b><small>${r ? `${r.time} min · ${esc(r.category)}` : ""}</small></span>
+          <button class="mini" data-roll="${ds}" aria-label="Bytt forslag for ${DAY_NAMES[i]}">🎲</button></div>`;
+      }).join("");
+    };
+    draw();
+    $("#ow", m).onchange = e => { overwrite = e.target.checked; build(); draw(); };
+    $("#again", m).onclick = () => { build(); draw(); };
+    $("#prop", m).onclick = e => { const b = e.target.closest("[data-roll]"); if (!b) return; rerollOne(b.dataset.roll); draw(); };
+    $("#ok", m).onclick = () => {
+      const before = JSON.parse(JSON.stringify(db.plan));
+      let n = 0;
+      for (const [ds, id] of Object.entries(map)){
+        const r = recipeById(id); if (!r) continue;
+        setPlan(ds, r, db.plan[ds] ? db.plan[ds].persons : db.settings.persons); n++;
+      }
+      save(); close(); refresh();
+      toast(`✨ ${n} middager lagt inn`, () => { db.plan = before; save(); refresh(); });
+    };
+  });
+}
+
+/* ---------- oppskrifter og favoritter ---------- */
+function filterHtml(f, favOnly){
+  return `<div class="tools">
+      <div class="search">${SEARCH_ICON}<input type="search" id="q" placeholder="Søk i navn, beskrivelse eller ingredienser" value="${esc(f.q)}" aria-label="Søk"></div>
+      ${favOnly ? "" : `<select id="sort" aria-label="Sorter"><option value="navn">Sorter: navn</option><option value="tid">Sorter: tid</option><option value="brukt">Sorter: mest brukt</option></select>`}
+    </div>
+    <div class="chips" id="cats">
+      ${favOnly ? "" : `<button class="chip fav${f.fav ? " on" : ""}" data-fav>★ Favoritter</button>`}
+      <button class="chip${!f.cat ? " on" : ""}" data-cat="">Alle</button>
+      ${CATS.map(c => `<button class="chip${f.cat === c ? " on" : ""}" data-cat="${c}">${catIcon(c)} ${c}</button>`).join("")}
+    </div>`;
+}
+function viewRecipes(){
+  return `<div class="vhead">
+      <div><h1>Oppskrifter</h1><p class="muted">Rettene familien lager. Trykk på en rett for ingredienser.</p></div>
+      <button class="btn pri eo" data-act="newRecipe">＋ Ny rett</button>
+    </div>
+    ${filterHtml(rf, false)}
+    <div class="tools"><span class="count" id="cnt"></span></div>
+    <div class="grid" id="grid"></div>`;
+}
+function viewFavs(){
+  return `<div class="vhead">
+      <div><h1>Favoritter</h1><p class="muted">Rettene som alltid går ned. Marker med ★ på en rett.</p></div>
+    </div>
+    ${filterHtml(ff, true)}
+    <div class="tools"><span class="count" id="cnt"></span></div>
+    <div class="grid" id="grid"></div>`;
+}
+function matches(r, q){
+  if (!q) return true;
+  const s = q.toLowerCase();
+  return r.name.toLowerCase().includes(s) || r.desc.toLowerCase().includes(s) || r.category.toLowerCase().includes(s) || r.ingredients.some(g => g.name.toLowerCase().includes(s));
+}
+function drawGrid(){
+  const fav = view === "favoritter";
+  const f = fav ? ff : rf;
+  let list = db.recipes.filter(r => (!fav || r.favorite) && (fav || !f.fav || r.favorite) && (!f.cat || r.category === f.cat) && matches(r, f.q));
+  const used = id => usesOf(id).length;
+  const sort = fav ? "navn" : f.sort;
+  list.sort(sort === "tid" ? (a, b) => a.time - b.time : sort === "brukt" ? (a, b) => used(b.id) - used(a.id) || a.name.localeCompare(b.name, "no") : (a, b) => a.name.localeCompare(b.name, "no"));
+  const sel = $("#sort"); if (sel) sel.value = f.sort;
+  $("#cnt").textContent = `${list.length} ${list.length === 1 ? "rett" : "retter"}`;
+  $("#grid").innerHTML = list.map(r => {
+    const n = used(r.id);
+    return `<div class="rc" role="button" tabindex="0" data-act="recipe" data-id="${r.id}">
+      <span class="ricon" style="--c:${catColor(r.category)}">${catIcon(r.category)}</span>
+      <span class="rb"><b>${esc(r.name)}</b><p>${esc(r.desc) || "&nbsp;"}</p>
+        <span class="meta"><span class="pill${r.time <= FAST ? " fast" : ""}">⏱ ${r.time} min</span><span class="tag"><span class="dot" style="--c:${catColor(r.category)}"></span>${esc(r.category)}</span>${n ? `<span class="tag">· ${n}× brukt</span>` : ""}</span></span>
+      <button class="star${r.favorite ? " on" : ""}" data-act="fav" data-id="${r.id}" aria-label="${r.favorite ? "Fjern fra favoritter" : "Legg til favoritter"}" ${canEdit() ? "" : "disabled"}>${r.favorite ? "★" : "☆"}</button>
+    </div>`;
+  }).join("") || `<div class="empty" style="grid-column:1/-1"><b>${fav ? "★" : "🔍"}</b>${fav && !db.recipes.some(r => r.favorite) ? "Ingen favoritter ennå. Trykk ☆ på en rett for å markere den." : "Ingen retter passer søket."}</div>`;
+}
+function recipeDetail(id){
+  const r = recipeById(id); if (!r) return;
+  let persons = db.settings.persons;
+  const uses = usesOf(r.id);
+  openModal(`<button class="mclose" data-close aria-label="Lukk">✕</button>
+    <h2>${catIcon(r.category)} ${esc(r.name)}</h2>
+    ${r.desc ? `<p class="muted" style="margin:0">${esc(r.desc)}</p>` : ""}
+    <div class="detail-meta">
+      <span class="pill${r.time <= FAST ? " fast" : ""}">⏱ ${r.time} min</span>
+      <span class="pill"><span class="dot" style="--c:${catColor(r.category)}"></span>${esc(r.category)}</span>
+      <span class="pill">Oppskrift for ${r.servings}</span>
+      ${r.favorite ? '<span class="pill" style="color:var(--star)">★ Favoritt</span>' : ""}
+      <span class="pill">${uses.length ? `Brukt ${uses.length}×, sist ${fmtShort(parseYmd(uses[uses.length - 1]))}` : "Ikke brukt ennå"}</span>
+    </div>
+    <div class="lbl-row"><b>Ingredienser</b><div class="seg" id="ps"><button data-p="3">3 pers</button><button data-p="4">4 pers</button></div></div>
+    <ul class="ilist" id="il"></ul>
+    <div class="acts">
+      <button class="btn danger grow eo" id="del">🗑 Slett</button>
+      <button class="btn eo" id="favb">${r.favorite ? "★ Fjern favoritt" : "☆ Favoritt"}</button>
+      <button class="btn eo" id="edit">✏️ Rediger</button>
+      <button class="btn pri eo" id="plan">📅 Legg i ukeplan</button>
+    </div>`,
+  (m, close) => {
+    const draw = () => {
+      $$("#ps button", m).forEach(b => b.classList.toggle("on", +b.dataset.p === persons));
+      const f = persons / r.servings;
+      $("#il", m).innerHTML = r.ingredients.map(g => {
+        const q = fmtQty(toBase(g.qty, g.unit) * f, FAM(g.unit));
+        return `<li><span>${q || "etter smak"}</span>${esc(g.name)}</li>`;
+      }).join("") || '<li class="muted">Ingen ingredienser lagt inn.</li>';
+    };
+    draw();
+    $("#ps", m).onclick = e => { const b = e.target.closest("button"); if (!b) return; persons = +b.dataset.p; draw(); };
+    $("#edit", m).onclick = () => { close(); recipeForm(r.id); };
+    $("#favb", m).onclick = () => { toggleFav(r.id); close(); refresh(); recipeDetail(r.id); };
+    $("#del", m).onclick = async () => {
+      if (!(await confirmBox("Slette rett?", `«${r.name}» slettes fra oppskriftene. Planlagte dager beholder navnet.`))) return;
+      const i = db.recipes.indexOf(r);
+      db.recipes.splice(i, 1); save(); close(); refresh();
+      toast(`Slettet ${r.name}`, () => { db.recipes.splice(i, 0, r); save(); refresh(); });
+    };
+    $("#plan", m).onclick = () => { close(); planPicker(r); };
+  });
+}
+function planPicker(r){
+  const dates = weekDates(weekStart);
+  openModal(`<button class="mclose" data-close aria-label="Lukk">✕</button>
+    <h2>📅 ${esc(r.name)}</h2>
+    <p class="muted" style="margin:0">Hvilken dag i uke ${isoWeek(weekStart).week}?</p>
+    <div class="prop">${dates.map((ds, i) => {
+      const e = entryView(db.plan[ds]);
+      return `<button class="prop-row" data-day="${ds}" style="text-align:left;width:100%"><span class="pd">${DAY_SHORT[i]}<small>${fmtShort(parseYmd(ds))}</small></span>
+        <span class="pn"><b>${e ? esc(e.name) : "Ledig"}</b><small>${e ? "Erstattes" : ""}</small></span></button>`;
+    }).join("")}</div>
+    <div class="acts"><button class="btn" data-close>Avbryt</button></div>`,
+  (m, close) => {
+    m.addEventListener("click", e => {
+      const b = e.target.closest("[data-day]"); if (!b) return;
+      const ds = b.dataset.day, old = db.plan[ds];
+      setPlan(ds, r, old ? old.persons : db.settings.persons); save(); close(); refresh();
+      toast(`${r.name} på ${DAY_NAMES[weekdayIdx(parseYmd(ds))].toLowerCase()}`, () => { if (old) db.plan[ds] = old; else delete db.plan[ds]; save(); refresh(); });
+    });
+  });
+}
+function toggleFav(id){
+  const r = recipeById(id); if (!r || !canEdit()) return;
+  r.favorite = !r.favorite; save();
+  toast(r.favorite ? `★ ${r.name} er favoritt` : `${r.name} er ikke lenger favoritt`);
+}
+function ingRow(g){
+  return `<div class="ing">
+    <input inputmode="decimal" placeholder="0" value="${g && g.qty ? num(g.qty) : ""}" aria-label="Mengde" data-f="qty">
+    <select aria-label="Enhet" data-f="unit">${UNITS.map(u => `<option${(g ? g.unit : "stk") === u ? " selected" : ""}>${u}</option>`).join("")}</select>
+    <input placeholder="Ingrediens" value="${g ? esc(g.name) : ""}" aria-label="Ingrediens" list="ingNames" data-f="name">
+    <select class="sec-sel" aria-label="Avdeling i butikken" data-f="section">${SECTIONS.map(s => `<option${(g ? g.section : "Annet") === s ? " selected" : ""}>${s}</option>`).join("")}</select>
+    <button type="button" class="x" data-rm aria-label="Fjern ingrediens">✕</button>
+  </div>`;
+}
+function recipeForm(id){
+  const r = id ? recipeById(id) : null;
+  const known = new Map();
+  for (const x of db.recipes) for (const g of x.ingredients) if (!known.has(g.name.toLowerCase())) known.set(g.name.toLowerCase(), g);
+  openModal(`<button class="mclose" data-close aria-label="Lukk">✕</button>
+    <h2>${r ? "Rediger rett" : "Ny rett"}</h2>
+    <form class="form" id="rfm" novalidate>
+      <div class="field full"><label for="fn">Navn</label><input id="fn" required maxlength="80" value="${r ? esc(r.name) : ""}" autofocus></div>
+      <div class="field full"><label for="fd">Kort beskrivelse</label><textarea id="fd" maxlength="300">${r ? esc(r.desc) : ""}</textarea></div>
+      <div class="field"><label for="ft">Tilberedningstid (min)</label><input id="ft" type="number" min="1" max="1440" inputmode="numeric" value="${r ? r.time : 30}"></div>
+      <div class="field"><label for="fc">Kategori</label><select id="fc">${CATS.map(c => `<option${(r ? r.category : "Hverdagsmiddag") === c ? " selected" : ""}>${c}</option>`).join("")}</select></div>
+      <div class="field"><label for="fs">Oppskriften er for (personer)</label><input id="fs" type="number" min="1" max="20" inputmode="numeric" value="${r ? r.servings : 4}"></div>
+      <div class="field" style="justify-content:flex-end"><label class="check"><input type="checkbox" id="ffav"${r && r.favorite ? " checked" : ""}> ★ Favoritt</label></div>
+      <div class="field full"><label>Ingredienser</label>
+        <div class="ing-head"><span>Mengde</span><span>Enhet</span><span>Navn</span><span>Avdeling</span><span></span></div>
+        <div class="ings" id="ings">${(r && r.ingredients.length ? r.ingredients : [null, null, null]).map(ingRow).join("")}</div>
+        <button type="button" class="btn sm" id="addIng" style="margin-top:8px;justify-self:start">＋ Ingrediens</button>
+        <datalist id="ingNames">${[...known.values()].map(g => `<option value="${esc(g.name)}">`).join("")}</datalist>
+      </div>
+    </form>
+    <p id="fmsg" role="alert" style="color:var(--danger);min-height:1.2em;margin:8px 0 0"></p>
+    <div class="acts"><button class="btn" data-close>Avbryt</button><button class="btn pri" type="submit" form="rfm">Lagre</button></div>`,
+  (m, close) => {
+    const ings = $("#ings", m);
+    $("#addIng", m).onclick = () => { ings.insertAdjacentHTML("beforeend", ingRow(null)); $$(".ing", ings).pop().querySelector("input").focus(); };
+    ings.addEventListener("click", e => { const b = e.target.closest("[data-rm]"); if (b) b.closest(".ing").remove(); });
+    // kjent ingrediens: foreslå samme enhet og avdeling som før
+    ings.addEventListener("change", e => {
+      if (e.target.dataset.f !== "name") return;
+      const g = known.get(e.target.value.trim().toLowerCase()); if (!g) return;
+      const row = e.target.closest(".ing");
+      row.querySelector('[data-f="section"]').value = g.section;
+      const qty = row.querySelector('[data-f="qty"]');
+      if (!qty.value) row.querySelector('[data-f="unit"]').value = g.unit;
+    });
+    $("#rfm", m).onsubmit = e => {
+      e.preventDefault();
+      const name = $("#fn", m).value.trim();
+      if (!name) { $("#fmsg", m).textContent = "Retten må ha et navn."; $("#fn", m).focus(); return; }
+      const dup = db.recipes.find(x => x.name.toLowerCase() === name.toLowerCase() && (!r || x.id !== r.id));
+      if (dup) { $("#fmsg", m).textContent = "Det finnes allerede en rett med det navnet."; return; }
+      const ingredients = $$(".ing", ings).map(row => cleanIng({
+        qty: row.querySelector('[data-f="qty"]').value, unit: row.querySelector('[data-f="unit"]').value,
+        name: row.querySelector('[data-f="name"]').value, section: row.querySelector('[data-f="section"]').value,
+      })).filter(g => g.name);
+      const data = cleanRecipe({ id: r ? r.id : uid(), name, desc: $("#fd", m).value, time: $("#ft", m).value, category: $("#fc", m).value,
+        servings: $("#fs", m).value, favorite: $("#ffav", m).checked, ingredients });
+      if (r){
+        Object.assign(r, data);
+        for (const e2 of Object.values(db.plan)) if (e2.recipeId === r.id){ e2.name = r.name; e2.category = r.category; e2.time = r.time; }
+      } else db.recipes.push(data);
+      save(); close(); refresh();
+      toast(r ? `Lagret ${data.name}` : `${catIcon(data.category)} ${data.name} er lagt til`);
+    };
+  }, "wide");
+}
+
+/* ---------- handleliste ---------- */
+function viewShop(){
+  const wk = weekKey(weekStart), dates = weekDates(weekStart);
+  const st = shopFor(wk);
+  const off = new Set(st.off), done = new Set(st.c);
+  const days = dates.filter(ds => !off.has(ds));
+  const items = buildShop(days);
+  const extras = db.extras[wk] || [];
+  const all = [...items.map(i => i.key), ...extras.map(x => "x:" + x.id)];
+  const nDone = all.filter(k => done.has(k)).length;
+  const groups = {};
+  for (const it of items) (groups[it.section] = groups[it.section] || []).push(it);
+  const itemHtml = (key, label, sub) => {
+    const isDone = done.has(key);
+    if (shopHide && isDone) return "";
+    return `<label class="item${isDone ? " done" : ""}" data-key="${esc(key)}"><input type="checkbox"${isDone ? " checked" : ""}><span class="box"></span><span class="it"><b>${label}</b>${sub ? `<small>${sub}</small>` : ""}</span></label>`;
+  };
+  const secs = SECTIONS.filter(s => groups[s]).map(s => {
+    const list = groups[s].sort((a, b) => a.name.localeCompare(b.name, "no"));
+    const left = list.filter(i => !done.has(i.key)).length;
+    const rows = list.map(i => itemHtml(i.key, `${esc(fmtQty(i.qty, i.unit))} ${esc(i.name)}`.trim(), esc(i.from.join(", ")))).join("");
+    if (!rows) return "";
+    return `<section class="card sec"><h3>${SEC_ICON[s]} ${s}<small>${left ? left + " igjen" : "✓"}</small></h3>${rows}</section>`;
+  }).join("");
+  const extraRows = extras.map(x => {
+    const k = "x:" + x.id, isDone = done.has(k);
+    if (shopHide && isDone) return "";
+    return `<div style="display:flex;align-items:center">${itemHtml(k, esc(x.name), "Lagt til for hånd").replace('class="item', 'style="flex:1" class="item')}<button class="mini eo" data-act="rmExtra" data-id="${x.id}" aria-label="Fjern ${esc(x.name)}">✕</button></div>`;
+  }).join("");
+  const plannedRecipeDays = dates.filter(ds => db.plan[ds] && recipeById(db.plan[ds].recipeId));
+  return `<div class="vhead">
+      <div><h1>Handleliste</h1><p class="muted">Laget fra ukeplanen og skalert til antall personer. Avhaking lagres på denne enheten.</p></div>
+      ${weekNavHtml()}
+    </div>
+    <div class="daypick" aria-label="Dager som tas med">
+      ${dates.map((ds, i) => { const has = plannedRecipeDays.includes(ds); return `<button data-act="shopDay" data-date="${ds}" class="${has && !off.has(ds) ? "on" : ""}" ${has ? "" : "disabled"} title="${has ? esc(entryView(db.plan[ds]).name) : "Ingen oppskrift"}">${DAY_SHORT[i]}</button>`; }).join("")}
+    </div>
+    <div class="shop-top">
+      <div class="progress" aria-label="${nDone} av ${all.length} kjøpt"><i style="width:${all.length ? nDone / all.length * 100 : 0}%"></i></div>
+      <span class="muted" style="font-weight:600">${nDone} av ${all.length} kjøpt</span>
+      <button class="btn sm" data-act="shopHide">${shopHide ? "Vis kjøpte" : "Skjul kjøpte"}</button>
+      <button class="btn sm" data-act="shopReset" ${nDone ? "" : "disabled"}>Nullstill</button>
+      <button class="btn sm" data-act="shopShare" ${all.length ? "" : "disabled"}>📤 Del</button>
+    </div>
+    ${all.length || canEdit() ? `<div class="secs">${secs}
+      <section class="card sec"><h3>🛒 Ekstra varer<small>${extras.length ? extras.filter(x => !done.has("x:" + x.id)).length + " igjen" : ""}</small></h3>
+        ${extraRows || '<p class="muted" style="margin:4px 0">Melk, kaffe, dopapir … det som ikke står i oppskriftene.</p>'}
+        <form class="extra-form eo" id="exf"><input id="exi" maxlength="60" placeholder="Legg til vare" aria-label="Legg til vare"><button class="btn sm pri" type="submit">Legg til</button></form>
+      </section></div>` : `<div class="empty card"><b>🛒</b>Ingen middager med oppskrift denne uka ennå.<br>Planlegg uka først, så fylles listen ut av seg selv.</div>`}`;
+}
+function shopText(){
+  const wk = weekKey(weekStart), dates = weekDates(weekStart), st = shopFor(wk);
+  const off = new Set(st.off), done = new Set(st.c);
+  const items = buildShop(dates.filter(ds => !off.has(ds))).filter(i => !done.has(i.key));
+  const lines = [`Handleliste uke ${isoWeek(weekStart).week}`];
+  for (const s of SECTIONS){
+    const l = items.filter(i => i.section === s).sort((a, b) => a.name.localeCompare(b.name, "no"));
+    if (!l.length) continue;
+    lines.push("", s.toUpperCase(), ...l.map(i => `- ${fmtQty(i.qty, i.unit)} ${i.name}`.replace(/- +/, "- ")));
+  }
+  const ex = (db.extras[wk] || []).filter(x => !done.has("x:" + x.id));
+  if (ex.length) lines.push("", "EKSTRA", ...ex.map(x => "- " + x.name));
+  return lines.join("\n");
+}
+async function shareShop(){
+  const text = shopText();
+  try{
+    if (navigator.share){ await navigator.share({ title: "Handleliste", text }); return; }
+  }catch(e){ if (e.name === "AbortError") return; }
+  try{ await navigator.clipboard.writeText(text); toast("📋 Handlelisten er kopiert"); }
+  catch(e){ toast("Klarte ikke å kopiere"); }
+}
+
+/* ---------- statistikk ---------- */
+function viewStats(){
+  const t = todayStr(), now = new Date();
+  const start = statsPeriod === "3m" ? ymd(new Date(now.getFullYear(), now.getMonth() - 2, 1))
+    : statsPeriod === "12m" ? ymd(new Date(now.getFullYear(), now.getMonth() - 11, 1)) : "0000";
+  const entries = Object.entries(db.plan).filter(([k]) => k >= start && k <= t).map(([k, e]) => ({ date: k, ...entryView(e) }));
+  const periodChips = `<div class="chips">${[["3m", "Siste 3 måneder"], ["12m", "Siste 12 måneder"], ["all", "Alt"]].map(([k, l]) => `<button class="chip${statsPeriod === k ? " on" : ""}" data-act="period" data-p="${k}">${l}</button>`).join("")}</div>`;
+  const head = `<div class="vhead"><div><h1>Statistikk</h1><p class="muted">Middager som er spist (planlagt til og med i dag).</p></div></div>${periodChips}`;
+  if (!entries.length) return head + `<div class="empty card" style="margin-top:12px"><b>📊</b>Ingen middager i perioden ennå.<br>Statistikken fylles ut etter hvert som dere planlegger og spiser.</div>`;
+
+  // mest brukte
+  const cnt = new Map();
+  for (const e of entries){ const k = e.recipeId && e.recipe ? e.recipeId : "t:" + e.name.toLowerCase(); const c = cnt.get(k) || { name: e.name, cat: e.category, n: 0 }; c.n++; cnt.set(k, c); }
+  const top = [...cnt.values()].sort((a, b) => b.n - a.n || a.name.localeCompare(b.name, "no")).slice(0, 8);
+  const maxTop = top[0].n;
+  const topHtml = top.map(x => `<div class="hbar"><span class="nm">${x.cat ? catIcon(x.cat) : "📝"} ${esc(x.name)}</span><span class="tr"><i style="width:${x.n / maxTop * 100}%;--c:${catColor(x.cat)}"></i></span><span class="v">${x.n}</span></div>`).join("");
+
+  // fisk per måned (12 siste måneder, eller færre for kort periode)
+  const months = statsPeriod === "3m" ? 3 : 12;
+  const fish = Array.from({ length: months }, (_, i) => { const d = new Date(now.getFullYear(), now.getMonth() - (months - 1 - i), 1); return { y: d.getFullYear(), m: d.getMonth(), n: 0 }; });
+  for (const e of entries) if (e.category === "Fisk"){ const d = parseYmd(e.date); const f = fish.find(x => x.y === d.getFullYear() && x.m === d.getMonth()); if (f) f.n++; }
+  const maxFish = Math.max(1, ...fish.map(x => x.n));
+  const fishTotal = fish.reduce((a, x) => a + x.n, 0);
+  const fishHtml = `<div class="vbars">${fish.map(x => `<div class="col"><em>${x.n || ""}</em><i style="height:${x.n / maxFish * 100}%;--c:${catColor("Fisk")}"></i><small>${MONTHS[x.m]}</small></div>`).join("")}</div>`;
+
+  // hverdagsmat vs helgekos
+  const withCat = entries.filter(e => e.recipe || e.category);
+  const kos = withCat.filter(isKos).length, hverdag = withCat.length - kos;
+  const pct = withCat.length ? Math.round(kos / withCat.length * 100) : 0;
+  const cK = catColor("Helgekos"), cH = catColor("Hverdagsmiddag");
+  const donut = `<div class="donut"><div class="ring" style="background:conic-gradient(${cK} 0 ${pct}%, ${cH} ${pct}% 100%)"><b>${pct}%<small>helgekos</small></b></div>
+    <div class="legend"><div><span class="dot" style="--c:${cH}"></span>Hverdagsmat <b style="margin-left:auto;padding-left:12px">${hverdag}</b></div><div><span class="dot" style="--c:${cK}"></span>Helgekos <b style="margin-left:auto;padding-left:12px">${kos}</b></div>
+    <small class="muted">Helgekos = kategori Helgekos eller Grill, eller over 45 min.</small></div></div>`;
+
+  // kategorier
+  const cats = CATS.map(c => ({ c, n: entries.filter(e => e.category === c).length })).filter(x => x.n).sort((a, b) => b.n - a.n);
+  const maxC = Math.max(1, ...cats.map(x => x.n));
+  const catHtml = cats.map(x => `<div class="hbar"><span class="nm">${catIcon(x.c)} ${x.c}</span><span class="tr"><i style="width:${x.n / maxC * 100}%;--c:${catColor(x.c)}"></i></span><span class="v">${x.n}</span></div>`).join("");
+
+  const wkdays = entries.filter(e => weekdayIdx(parseYmd(e.date)) < 5 && e.recipe);
+  const avg = wkdays.length ? Math.round(wkdays.reduce((a, e) => a + e.time, 0) / wkdays.length) : 0;
+  const distinct = cnt.size;
+  const favShare = entries.length ? Math.round(entries.filter(e => e.recipe && e.recipe.favorite).length / entries.length * 100) : 0;
+  return head + `
+    <div class="kpis" style="margin-top:8px">
+      <div class="card kpi"><b>${entries.length}</b><span>middager</span></div>
+      <div class="card kpi"><b>${distinct}</b><span>ulike retter</span></div>
+      <div class="card kpi"><b>${avg ? avg + " min" : "–"}</b><span>snittid på hverdager</span></div>
+      <div class="card kpi"><b>${favShare}%</b><span>var favoritter</span></div>
+    </div>
+    <div class="stats">
+      <section class="card"><h3>🏆 Mest brukte middager</h3>${topHtml}</section>
+      <section class="card"><h3>⚖️ Hverdagsmat og helgekos</h3>${donut}</section>
+      <section class="card"><h3>🐟 Fiskemiddager per måned <span class="muted" style="font-weight:500">· ${fishTotal} totalt</span></h3>${fishHtml}</section>
+      <section class="card"><h3>🍽️ Kategorier</h3>${catHtml || '<p class="muted">Ingen data.</p>'}</section>
+    </div>`;
+}
+
+/* ---------- meny, tema, eksport/import ---------- */
+function applyTheme(){
+  const t = ls.get(THEME_KEY) || "";
+  if (t) document.documentElement.dataset.theme = t; else delete document.documentElement.dataset.theme;
+  const dark = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  $("#themeBtn").textContent = dark ? "☀️" : "🌙";
+  $("#themeBtn").setAttribute("aria-label", dark ? "Bytt til lyst tema" : "Bytt til mørkt tema");
+  $('meta[name="theme-color"]').setAttribute("content", dark ? "#16130f" : "#f7f3ec");
+}
+function toggleTheme(){
+  const t = ls.get(THEME_KEY) || "";
+  const dark = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  ls.set(THEME_KEY, dark ? "light" : "dark"); applyTheme();
+}
+function menuForm(){
+  openModal(`<button class="mclose" data-close aria-label="Lukk">✕</button>
+    <h2>Meny</h2>
+    <div class="lbl-row"><b>Tema</b><div class="seg" id="th"><button data-t="light">☀️ Lyst</button><button data-t="dark">🌙 Mørkt</button><button data-t="">📱 Auto</button></div></div>
+    <div class="lbl-row eo"><b>Standard antall personer</b><div class="seg" id="dp"><button data-p="3">3</button><button data-p="4">4</button></div></div>
+    <div class="menu-list">
+      <button class="btn" id="exp">⬇️ Eksporter data (JSON)</button>
+      <button class="btn eo" id="imp">⬆️ Importer data (JSON)</button>
+      <button class="btn" id="lk">${canEdit() ? "🔒 Lås redigering på denne enheten" : "🔓 Lås opp redigering"}</button>
+      <a class="btn" href="https://github.com/${GH.owner}/${GH.repo}/blob/${GH.branch}/CHANGELOG.md" target="_blank" rel="noopener">📝 Endringslogg</a>
+    </div>
+    <input type="file" id="impf" accept="application/json,.json" hidden>
+    <p class="ver">${APP_NAME} v${APP_VERSION} · ${db.recipes.length} retter · ${Object.keys(db.plan).length} planlagte dager</p>`,
+  (m, close) => {
+    const drawT = () => { const cur = ls.get(THEME_KEY) || ""; $$("#th button", m).forEach(b => b.classList.toggle("on", b.dataset.t === cur)); };
+    drawT();
+    $("#th", m).onclick = e => { const b = e.target.closest("button"); if (!b) return; ls.set(THEME_KEY, b.dataset.t); if (!b.dataset.t) ls.del(THEME_KEY); applyTheme(); drawT(); };
+    const drawP = () => $$("#dp button", m).forEach(b => b.classList.toggle("on", +b.dataset.p === db.settings.persons));
+    drawP();
+    $("#dp", m).onclick = e => { const b = e.target.closest("button"); if (!b) return; db.settings.persons = +b.dataset.p; save(); drawP(); };
+    $("#exp", m).onclick = () => exportData();
+    $("#imp", m).onclick = () => $("#impf", m).click();
+    $("#impf", m).onchange = e => { const f = e.target.files[0]; if (f){ close(); importData(f); } };
+    $("#lk", m).onclick = async () => {
+      close();
+      if (!canEdit()) return unlockForm();
+      if (sync.dirty) await pushNow();
+      lockOut("🔒 Redigering er låst på denne enheten");
+    };
+  });
+}
+function exportData(){
+  const blob = new Blob([fileText(db)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob); a.download = `middagspanikk-${todayStr()}.json`;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  toast("⬇️ Data er eksportert");
+}
+async function importData(file){
+  if (!canEdit()) return toast("Lås opp redigering først");
+  let data;
+  try{ data = validate(JSON.parse(await file.text())); }
+  catch(e){ return toast("Kunne ikke lese filen: " + (e.message || "ugyldig JSON")); }
+  const ok = await confirmBox("Importere data?", `Filen har ${data.recipes.length} retter og ${Object.keys(data.plan).length} planlagte dager. Alt nåværende innhold erstattes. En kopi tas vare på denne enheten først.`, "Importer", true);
+  if (!ok) return;
+  ls.set(BACKUP_KEY, JSON.stringify({ date: new Date().toISOString(), app: APP_VERSION, data: db }));
+  const before = db;
+  db = data; save(); refresh();
+  toast("⬆️ Data er importert", () => { db = before; save(); refresh(); });
+}
+
+/* ---------- modal og toast ---------- */
+let modalClose = null;
+function openModal(html, onMount, cls = ""){
+  if (modalClose) modalClose();
+  const wrap = document.createElement("div");
+  wrap.id = "modal"; wrap.className = "modal-wrap";
+  wrap.innerHTML = `<div class="modal ${cls}" role="dialog" aria-modal="true">${html}</div>`;
+  const prev = document.activeElement;
+  document.body.appendChild(wrap); document.body.classList.add("noscroll");
+  const onKey = e => { if (e.key === "Escape") close(); };
+  const close = () => {
+    if (!wrap.isConnected) return;
+    wrap.remove(); document.body.classList.remove("noscroll");
+    document.removeEventListener("keydown", onKey);
+    if (modalClose === close) modalClose = null;
+    if (prev && prev.focus && prev.isConnected) prev.focus({ preventScroll: true });
+  };
+  document.addEventListener("keydown", onKey);
+  wrap.addEventListener("click", e => { if (e.target === wrap || e.target.closest("[data-close]")) close(); });
+  modalClose = close;
+  if (onMount) onMount(wrap.firstElementChild, close);
+  const f = $("[autofocus]", wrap);
+  if (f && matchMedia("(min-width:700px)").matches) setTimeout(() => f.focus(), 40);
+  return close;
+}
+function confirmBox(title, text, okText = "Slett", danger = true, cancelText = "Avbryt"){
+  return new Promise(res => {
+    let done = false;
+    const finish = v => { if (!done){ done = true; res(v); } };
+    openModal(`<h2>${esc(title)}</h2><p class="muted">${esc(text)}</p>
+      <div class="acts"><button class="btn" id="cn">${esc(cancelText)}</button><button class="btn ${danger ? "danger" : "pri"}" id="cy">${esc(okText)}</button></div>`,
+    (m, close) => {
+      $("#cn", m).onclick = () => { finish(false); close(); };
+      $("#cy", m).onclick = () => { finish(true); close(); };
+      new MutationObserver((_, o) => { if (!m.isConnected){ o.disconnect(); finish(false); } }).observe(document.body, { childList: true });
+    });
+  });
+}
+function toast(msg, undo){
+  const box = $("#toasts"); if (!box) return;
+  const el = document.createElement("div");
+  el.className = "toast";
+  el.innerHTML = `<span>${esc(msg)}</span>${undo ? '<button type="button">Angre</button>' : ""}`;
+  box.appendChild(el);
+  while (box.children.length > 3) box.firstChild.remove();
+  const t = setTimeout(() => el.remove(), undo ? 6000 : 3000);
+  if (undo) el.querySelector("button").onclick = () => { clearTimeout(t); el.remove(); undo(); };
+}
+
+/* ---------- hendelser ---------- */
+document.addEventListener("click", e => {
+  const b = e.target.closest("[data-act]");
+  if (!b || b.closest("#modal")) return;
+  const act = b.dataset.act, ds = b.dataset.date, id = b.dataset.id;
+  switch (act){
+    case "week": {
+      const d = +b.dataset.d;
+      weekStart = d === 0 ? mondayOf(new Date()) : addDays(weekStart, 7 * d);
+      refresh(); break;
+    }
+    case "openDay": {
+      if (canEdit()) dayForm(ds);
+      else { const e2 = db.plan[ds]; if (e2 && recipeById(e2.recipeId)) recipeDetail(e2.recipeId); }
+      break;
+    }
+    case "persons": {
+      if (!canEdit()) break;
+      const e2 = db.plan[ds]; if (!e2) break;
+      e2.persons = e2.persons === 4 ? 3 : 4; save(); refresh(); break;
+    }
+    case "reroll": reroll(ds); break;
+    case "clearDay": clearDay(ds); break;
+    case "propose": proposeForm(); break;
+    case "recipe": {
+      if (e.target.closest(".star")) break;
+      recipeDetail(id); break;
+    }
+    case "fav": e.stopPropagation(); toggleFav(id); drawGrid(); break;
+    case "newRecipe": recipeForm(); break;
+    case "shopDay": {
+      const wk = weekKey(weekStart), st = shopFor(wk);
+      st.off = st.off.includes(ds) ? st.off.filter(x => x !== ds) : [...st.off, ds];
+      setShopFor(wk, st); refresh(); break;
+    }
+    case "shopHide": shopHide = !shopHide; refresh(); break;
+    case "shopReset": { const wk = weekKey(weekStart), st = shopFor(wk), old = st.c; st.c = []; setShopFor(wk, st); refresh(); toast("Avhakingene er nullstilt", () => { st.c = old; setShopFor(wk, st); refresh(); }); break; }
+    case "shopShare": shareShop(); break;
+    case "rmExtra": {
+      const wk = weekKey(weekStart), list = db.extras[wk] || [];
+      const i = list.findIndex(x => x.id === id); if (i < 0) break;
+      const [old] = list.splice(i, 1); if (!list.length) delete db.extras[wk];
+      save(); refresh();
+      toast(`Fjernet ${old.name}`, () => { (db.extras[wk] = db.extras[wk] || []).splice(i, 0, old); save(); refresh(); });
+      break;
+    }
+    case "period": statsPeriod = b.dataset.p; refresh(); break;
+    case "theme": toggleTheme(); break;
+    case "menu": menuForm(); break;
+    case "lock": if (canEdit()) menuForm(); else unlockForm(); break;
+    case "saveNow": pushNow(); break;
+    case "retrySync": pushNow(); break;
+  }
+});
+/* avhaking i handlelisten (label + skjult checkbox) */
+document.addEventListener("change", e => {
+  const item = e.target.closest(".item"); if (!item || e.target.type !== "checkbox") return;
+  const wk = weekKey(weekStart), st = shopFor(wk), k = item.dataset.key;
+  st.c = e.target.checked ? [...new Set([...st.c, k])] : st.c.filter(x => x !== k);
+  setShopFor(wk, st); refresh();
+});
+document.addEventListener("submit", e => {
+  if (e.target.id !== "exf") return;
+  e.preventDefault();
+  const inp = $("#exi"), name = inp.value.trim(); if (!name || !canEdit()) return;
+  const wk = weekKey(weekStart);
+  (db.extras[wk] = db.extras[wk] || []).push({ id: uid(), name });
+  save(); refresh();
+  const again = $("#exi"); if (again) again.focus();
+});
+/* søk og filter i oppskrifter/favoritter – tegner bare rutenettet, så søkefeltet beholder fokus */
+document.addEventListener("input", e => {
+  if (e.target.id !== "q" || e.target.closest("#modal")) return;
+  (view === "favoritter" ? ff : rf).q = e.target.value; drawGrid();
+});
+document.addEventListener("change", e => {
+  if (e.target.id !== "sort") return;
+  rf.sort = e.target.value; drawGrid();
+});
+document.addEventListener("click", e => {
+  const c = e.target.closest("#cats .chip"); if (!c) return;
+  const f = view === "favoritter" ? ff : rf;
+  if ("fav" in c.dataset) f.fav = !f.fav; else f.cat = c.dataset.cat;
+  $$("#cats .chip").forEach(x => x.classList.toggle("on", "fav" in x.dataset ? f.fav : x.dataset.cat === f.cat));
+  drawGrid();
+});
+document.addEventListener("keydown", e => {
+  if ((e.key === "Enter" || e.key === " ") && e.target.matches(".rc[data-act]")){ e.preventDefault(); recipeDetail(e.target.dataset.id); }
+});
+addEventListener("hashchange", route);
+addEventListener("storage", e => {
+  if (e.key === TOKEN_KEY){ token = ls.get(TOKEN_KEY) || ""; drawLock(); refresh(); }
+  if (e.key === SHOP_KEY && view === "handleliste") refresh();
+});
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden" && sync.dirty && canEdit()) pushNow(); });
+addEventListener("beforeunload", e => { if (sync.dirty && canEdit()) { pushNow(); e.preventDefault(); e.returnValue = ""; } });
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", applyTheme);
+
+/* ---------- start ---------- */
+applyTheme();
+{ const h = (location.hash.replace(/^#\/?/, "").split("/")[0] || "uke"); view = VIEWS.some(v => v[0] === h) ? h : "uke"; }
+load();
+</script>
+</body>
+</html>

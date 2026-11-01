@@ -1,7 +1,7 @@
 {
   "app": "Middags panikk™",
   "appVersion": "1.0.0",
-  "updated": "2026-11-01T12:14:48.954Z",
+  "updated": "2026-11-01T12:18:39.148Z",
   "version": 1,
   "settings": {
     "persons": 3
@@ -75,6 +75,12 @@
           "unit": "glass",
           "name": "tacosaus",
           "section": "Hermetikk og saus"
+        },
+        {
+          "qty": 1,
+          "unit": "stk",
+          "name": "koriander",
+          "section": "Krydder"
         }
       ]
     },

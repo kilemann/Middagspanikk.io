@@ -1,0 +1,1656 @@
+{
+  "app": "Middags panikk™",
+  "appVersion": "1.0.0",
+  "updated": "2026-11-01T12:14:48.954Z",
+  "version": 1,
+  "settings": {
+    "persons": 3
+  },
+  "recipes": [
+    {
+      "id": "r01",
+      "name": "Taco",
+      "desc": "Fredagsklassikeren med kjøttdeig, grønnsaker og alt tilbehøret.",
+      "time": 25,
+      "category": "Kjøtt",
+      "servings": 4,
+      "favorite": true,
+      "ingredients": [
+        {
+          "qty": 400,
+          "unit": "g",
+          "name": "kjøttdeig",
+          "section": "Kjøtt og fisk"
+        },
+        {
+          "qty": 1,
+          "unit": "pose",
+          "name": "tacokrydder",
+          "section": "Krydder"
+        },
+        {
+          "qty": 8,
+          "unit": "stk",
+          "name": "tortillalefser",
+          "section": "Brød og bakst"
+        },
+        {
+          "qty": 1,
+          "unit": "stk",
+          "name": "isbergsalat",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 2,
+          "unit": "stk",
+          "name": "tomat",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 1,
+          "unit": "stk",
+          "name": "agurk",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 1,
+          "unit": "boks",
+          "name": "mais",
+          "section": "Hermetikk og saus"
+        },
+        {
+          "qty": 200,
+          "unit": "g",
+          "name": "revet ost",
+          "section": "Meieri og egg"
+        },
+        {
+          "qty": 1,
+          "unit": "beger",
+          "name": "rømme",
+          "section": "Meieri og egg"
+        },
+        {
+          "qty": 1,
+          "unit": "glass",
+          "name": "tacosaus",
+          "section": "Hermetikk og saus"
+        }
+      ]
+    },
+    {
+      "id": "r02",
+      "name": "Kjøttkaker i brun saus",
+      "desc": "Hjemmelagde kjøttkaker med poteter, erter og tyttebær.",
+      "time": 50,
+      "category": "Hverdagsmiddag",
+      "servings": 4,
+      "favorite": false,
+      "ingredients": [
+        {
+          "qty": 600,
+          "unit": "g",
+          "name": "kjøttdeig",
+          "section": "Kjøtt og fisk"
+        },
+        {
+          "qty": 1,
+          "unit": "stk",
+          "name": "egg",
+          "section": "Meieri og egg"
+        },
+        {
+          "qty": 1,
+          "unit": "dl",
+          "name": "melk",
+          "section": "Meieri og egg"
+        },
+        {
+          "qty": 1,
+          "unit": "stk",
+          "name": "løk",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 1,
+          "unit": "kg",
+          "name": "poteter",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 1,
+          "unit": "pose",
+          "name": "brun saus",
+          "section": "Tørrvarer"
+        },
+        {
+          "qty": 400,
+          "unit": "g",
+          "name": "erter",
+          "section": "Frys"
+        },
+        {
+          "qty": 1,
+          "unit": "glass",
+          "name": "tyttebærsyltetøy",
+          "section": "Hermetikk og saus"
+        }
+      ]
+    },
+    {
+      "id": "r03",
+      "name": "Laks med poteter",
+      "desc": "Ovnsbakt laks med kokte poteter, brokkoli og smeltet smør.",
+      "time": 30,
+      "category": "Fisk",
+      "servings": 4,
+      "favorite": false,
+      "ingredients": [
+        {
+          "qty": 600,
+          "unit": "g",
+          "name": "laksefilet",
+          "section": "Kjøtt og fisk"
+        },
+        {
+          "qty": 1,
+          "unit": "kg",
+          "name": "poteter",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 1,
+          "unit": "stk",
+          "name": "brokkoli",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 1,
+          "unit": "stk",
+          "name": "sitron",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 75,
+          "unit": "g",
+          "name": "smør",
+          "section": "Meieri og egg"
+        }
+      ]
+    },
+    {
+      "id": "r04",
+      "name": "Fiskekaker",
+      "desc": "Fiskekaker med poteter, revet gulrot og løksaus.",
+      "time": 25,
+      "category": "Fisk",
+      "servings": 4,
+      "favorite": false,
+      "ingredients": [
+        {
+          "qty": 600,
+          "unit": "g",
+          "name": "fiskekaker",
+          "section": "Kjøtt og fisk"
+        },
+        {
+          "qty": 1,
+          "unit": "kg",
+          "name": "poteter",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 4,
+          "unit": "stk",
+          "name": "gulrot",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 1,
+          "unit": "pose",
+          "name": "løksaus",
+          "section": "Tørrvarer"
+        }
+      ]
+    },
+    {
+      "id": "r05",
+      "name": "Kyllingwok",
+      "desc": "Rask wok med kylling, grønnsaker og ris.",
+      "time": 20,
+      "category": "Kylling",
+      "servings": 4,
+      "favorite": true,
+      "ingredients": [
+        {
+          "qty": 600,
+          "unit": "g",
+          "name": "kyllingfilet",
+          "section": "Kjøtt og fisk"
+        },
+        {
+          "qty": 600,
+          "unit": "g",
+          "name": "wokgrønnsaker",
+          "section": "Frys"
+        },
+        {
+          "qty": 1,
+          "unit": "glass",
+          "name": "woksaus",
+          "section": "Hermetikk og saus"
+        },
+        {
+          "qty": 300,
+          "unit": "g",
+          "name": "ris",
+          "section": "Tørrvarer"
+        }
+      ]
+    },
+    {
+      "id": "r06",
+      "name": "Hjemmelaget pizza",
+      "desc": "Pizza med hjemmelaget bunn og favorittfyllet.",
+      "time": 75,
+      "category": "Helgekos",
+      "servings": 4,
+      "favorite": true,
+      "ingredients": [
+        {
+          "qty": 500,
+          "unit": "g",
+          "name": "hvetemel",
+          "section": "Tørrvarer"
+        },
+        {
+          "qty": 1,
+          "unit": "pk",
+          "name": "gjær",
+          "section": "Meieri og egg"
+        },
+        {
+          "qty": 1,
+          "unit": "boks",
+          "name": "hakkede tomater",
+          "section": "Hermetikk og saus"
+        },
+        {
+          "qty": 300,
+          "unit": "g",
+          "name": "revet ost",
+          "section": "Meieri og egg"
+        },
+        {
+          "qty": 200,
+          "unit": "g",
+          "name": "skinke",
+          "section": "Kjøtt og fisk"
+        },
+        {
+          "qty": 1,
+          "unit": "stk",
+          "name": "paprika",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 150,
+          "unit": "g",
+          "name": "sjampinjong",
+          "section": "Frukt og grønt"
+        }
+      ]
+    },
+    {
+      "id": "r07",
+      "name": "Lasagne",
+      "desc": "Lasagne med kjøttsaus og hvit saus, gratinert i ovnen.",
+      "time": 80,
+      "category": "Helgekos",
+      "servings": 4,
+      "favorite": true,
+      "ingredients": [
+        {
+          "qty": 500,
+          "unit": "g",
+          "name": "kjøttdeig",
+          "section": "Kjøtt og fisk"
+        },
+        {
+          "qty": 1,
+          "unit": "pk",
+          "name": "lasagneplater",
+          "section": "Tørrvarer"
+        },
+        {
+          "qty": 2,
+          "unit": "boks",
+          "name": "hakkede tomater",
+          "section": "Hermetikk og saus"
+        },
+        {
+          "qty": 1,
+          "unit": "stk",
+          "name": "løk",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 2,
+          "unit": "fedd",
+          "name": "hvitløk",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 5,
+          "unit": "dl",
+          "name": "melk",
+          "section": "Meieri og egg"
+        },
+        {
+          "qty": 50,
+          "unit": "g",
+          "name": "smør",
+          "section": "Meieri og egg"
+        },
+        {
+          "qty": 200,
+          "unit": "g",
+          "name": "revet ost",
+          "section": "Meieri og egg"
+        }
+      ]
+    },
+    {
+      "id": "r08",
+      "name": "Biff med fløtegratinerte poteter",
+      "desc": "Helgemiddag med stekt biff, fløtegratinerte poteter og bearnaise.",
+      "time": 70,
+      "category": "Helgekos",
+      "servings": 4,
+      "favorite": false,
+      "ingredients": [
+        {
+          "qty": 600,
+          "unit": "g",
+          "name": "ytrefilet",
+          "section": "Kjøtt og fisk"
+        },
+        {
+          "qty": 1,
+          "unit": "kg",
+          "name": "poteter",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 3,
+          "unit": "dl",
+          "name": "fløte",
+          "section": "Meieri og egg"
+        },
+        {
+          "qty": 150,
+          "unit": "g",
+          "name": "revet ost",
+          "section": "Meieri og egg"
+        },
+        {
+          "qty": 1,
+          "unit": "stk",
+          "name": "brokkoli",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 1,
+          "unit": "pose",
+          "name": "bearnaisesaus",
+          "section": "Tørrvarer"
+        }
+      ]
+    },
+    {
+      "id": "r09",
+      "name": "Gryterett",
+      "desc": "Lun kjøttgryte med grønnsaker, servert med ris.",
+      "time": 60,
+      "category": "Kjøtt",
+      "servings": 4,
+      "favorite": false,
+      "ingredients": [
+        {
+          "qty": 600,
+          "unit": "g",
+          "name": "grytekjøtt",
+          "section": "Kjøtt og fisk"
+        },
+        {
+          "qty": 2,
+          "unit": "stk",
+          "name": "løk",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 4,
+          "unit": "stk",
+          "name": "gulrot",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 1,
+          "unit": "boks",
+          "name": "hakkede tomater",
+          "section": "Hermetikk og saus"
+        },
+        {
+          "qty": 1,
+          "unit": "stk",
+          "name": "buljongterning",
+          "section": "Krydder"
+        },
+        {
+          "qty": 300,
+          "unit": "g",
+          "name": "ris",
+          "section": "Tørrvarer"
+        }
+      ]
+    },
+    {
+      "id": "r10",
+      "name": "Kyllingtaco",
+      "desc": "Taco med krydret kylling i stedet for kjøttdeig.",
+      "time": 25,
+      "category": "Kylling",
+      "servings": 4,
+      "favorite": false,
+      "ingredients": [
+        {
+          "qty": 500,
+          "unit": "g",
+          "name": "kyllingfilet",
+          "section": "Kjøtt og fisk"
+        },
+        {
+          "qty": 1,
+          "unit": "pose",
+          "name": "tacokrydder",
+          "section": "Krydder"
+        },
+        {
+          "qty": 8,
+          "unit": "stk",
+          "name": "tortillalefser",
+          "section": "Brød og bakst"
+        },
+        {
+          "qty": 1,
+          "unit": "stk",
+          "name": "isbergsalat",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 2,
+          "unit": "stk",
+          "name": "tomat",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 1,
+          "unit": "boks",
+          "name": "mais",
+          "section": "Hermetikk og saus"
+        },
+        {
+          "qty": 200,
+          "unit": "g",
+          "name": "revet ost",
+          "section": "Meieri og egg"
+        },
+        {
+          "qty": 1,
+          "unit": "beger",
+          "name": "rømme",
+          "section": "Meieri og egg"
+        }
+      ]
+    },
+    {
+      "id": "r11",
+      "name": "Pølsegrateng",
+      "desc": "Barnefavoritten: pølser og makaroni i ostegrateng.",
+      "time": 45,
+      "category": "Hverdagsmiddag",
+      "servings": 4,
+      "favorite": false,
+      "ingredients": [
+        {
+          "qty": 400,
+          "unit": "g",
+          "name": "wienerpølser",
+          "section": "Kjøtt og fisk"
+        },
+        {
+          "qty": 250,
+          "unit": "g",
+          "name": "makaroni",
+          "section": "Tørrvarer"
+        },
+        {
+          "qty": 3,
+          "unit": "stk",
+          "name": "egg",
+          "section": "Meieri og egg"
+        },
+        {
+          "qty": 5,
+          "unit": "dl",
+          "name": "melk",
+          "section": "Meieri og egg"
+        },
+        {
+          "qty": 200,
+          "unit": "g",
+          "name": "revet ost",
+          "section": "Meieri og egg"
+        }
+      ]
+    },
+    {
+      "id": "r12",
+      "name": "Kremet pastarett",
+      "desc": "Pasta i kremet saus med bacon og sopp.",
+      "time": 25,
+      "category": "Hverdagsmiddag",
+      "servings": 4,
+      "favorite": true,
+      "ingredients": [
+        {
+          "qty": 400,
+          "unit": "g",
+          "name": "pasta",
+          "section": "Tørrvarer"
+        },
+        {
+          "qty": 200,
+          "unit": "g",
+          "name": "bacon",
+          "section": "Kjøtt og fisk"
+        },
+        {
+          "qty": 3,
+          "unit": "dl",
+          "name": "matfløte",
+          "section": "Meieri og egg"
+        },
+        {
+          "qty": 150,
+          "unit": "g",
+          "name": "sjampinjong",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 1,
+          "unit": "stk",
+          "name": "løk",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 75,
+          "unit": "g",
+          "name": "parmesan",
+          "section": "Meieri og egg"
+        }
+      ]
+    },
+    {
+      "id": "r13",
+      "name": "Kyllinggryte med ris",
+      "desc": "Kyllinglår i kremet paprikasaus, servert med ris.",
+      "time": 35,
+      "category": "Kylling",
+      "servings": 4,
+      "favorite": false,
+      "ingredients": [
+        {
+          "qty": 800,
+          "unit": "g",
+          "name": "kyllinglårfilet",
+          "section": "Kjøtt og fisk"
+        },
+        {
+          "qty": 2,
+          "unit": "stk",
+          "name": "paprika",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 1,
+          "unit": "stk",
+          "name": "løk",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 3,
+          "unit": "dl",
+          "name": "matfløte",
+          "section": "Meieri og egg"
+        },
+        {
+          "qty": 1,
+          "unit": "ss",
+          "name": "paprikapulver",
+          "section": "Krydder"
+        },
+        {
+          "qty": 300,
+          "unit": "g",
+          "name": "ris",
+          "section": "Tørrvarer"
+        }
+      ]
+    },
+    {
+      "id": "r14",
+      "name": "Hamburger",
+      "desc": "Hverdagsburger med salat, tomat og dressing.",
+      "time": 25,
+      "category": "Kjøtt",
+      "servings": 4,
+      "favorite": false,
+      "ingredients": [
+        {
+          "qty": 500,
+          "unit": "g",
+          "name": "karbonadedeig",
+          "section": "Kjøtt og fisk"
+        },
+        {
+          "qty": 4,
+          "unit": "stk",
+          "name": "hamburgerbrød",
+          "section": "Brød og bakst"
+        },
+        {
+          "qty": 1,
+          "unit": "stk",
+          "name": "isbergsalat",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 2,
+          "unit": "stk",
+          "name": "tomat",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 1,
+          "unit": "stk",
+          "name": "rødløk",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 4,
+          "unit": "skive",
+          "name": "ost",
+          "section": "Meieri og egg"
+        },
+        {
+          "qty": 1,
+          "unit": "stk",
+          "name": "hamburgerdressing",
+          "section": "Hermetikk og saus"
+        }
+      ]
+    },
+    {
+      "id": "r15",
+      "name": "Torsk med bacon",
+      "desc": "Ovnsbakt torsk med sprøstekt bacon, poteter og erter.",
+      "time": 35,
+      "category": "Fisk",
+      "servings": 4,
+      "favorite": false,
+      "ingredients": [
+        {
+          "qty": 600,
+          "unit": "g",
+          "name": "torskefilet",
+          "section": "Kjøtt og fisk"
+        },
+        {
+          "qty": 150,
+          "unit": "g",
+          "name": "bacon",
+          "section": "Kjøtt og fisk"
+        },
+        {
+          "qty": 1,
+          "unit": "kg",
+          "name": "poteter",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 400,
+          "unit": "g",
+          "name": "erter",
+          "section": "Frys"
+        },
+        {
+          "qty": 50,
+          "unit": "g",
+          "name": "smør",
+          "section": "Meieri og egg"
+        }
+      ]
+    },
+    {
+      "id": "r16",
+      "name": "Kyllingcurry",
+      "desc": "Mild curry med kylling og kokosmelk, servert med ris og nanbrød.",
+      "time": 30,
+      "category": "Kylling",
+      "servings": 4,
+      "favorite": true,
+      "ingredients": [
+        {
+          "qty": 600,
+          "unit": "g",
+          "name": "kyllingfilet",
+          "section": "Kjøtt og fisk"
+        },
+        {
+          "qty": 1,
+          "unit": "boks",
+          "name": "kokosmelk",
+          "section": "Hermetikk og saus"
+        },
+        {
+          "qty": 1,
+          "unit": "glass",
+          "name": "mild currypaste",
+          "section": "Hermetikk og saus"
+        },
+        {
+          "qty": 1,
+          "unit": "stk",
+          "name": "løk",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 1,
+          "unit": "stk",
+          "name": "paprika",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 300,
+          "unit": "g",
+          "name": "ris",
+          "section": "Tørrvarer"
+        },
+        {
+          "qty": 4,
+          "unit": "stk",
+          "name": "nanbrød",
+          "section": "Brød og bakst"
+        }
+      ]
+    },
+    {
+      "id": "r17",
+      "name": "Chili con carne",
+      "desc": "Krydret gryte med kjøttdeig og bønner. Enda bedre dagen etter.",
+      "time": 45,
+      "category": "Kjøtt",
+      "servings": 4,
+      "favorite": false,
+      "ingredients": [
+        {
+          "qty": 500,
+          "unit": "g",
+          "name": "kjøttdeig",
+          "section": "Kjøtt og fisk"
+        },
+        {
+          "qty": 2,
+          "unit": "boks",
+          "name": "hakkede tomater",
+          "section": "Hermetikk og saus"
+        },
+        {
+          "qty": 1,
+          "unit": "boks",
+          "name": "kidneybønner",
+          "section": "Hermetikk og saus"
+        },
+        {
+          "qty": 1,
+          "unit": "stk",
+          "name": "løk",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 2,
+          "unit": "fedd",
+          "name": "hvitløk",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 1,
+          "unit": "ss",
+          "name": "chilipulver",
+          "section": "Krydder"
+        },
+        {
+          "qty": 300,
+          "unit": "g",
+          "name": "ris",
+          "section": "Tørrvarer"
+        },
+        {
+          "qty": 1,
+          "unit": "beger",
+          "name": "rømme",
+          "section": "Meieri og egg"
+        }
+      ]
+    },
+    {
+      "id": "r18",
+      "name": "Koteletter",
+      "desc": "Stekte svinekoteletter med poteter, brokkoli og brun saus.",
+      "time": 30,
+      "category": "Kjøtt",
+      "servings": 4,
+      "favorite": false,
+      "ingredients": [
+        {
+          "qty": 4,
+          "unit": "stk",
+          "name": "svinekoteletter",
+          "section": "Kjøtt og fisk"
+        },
+        {
+          "qty": 1,
+          "unit": "kg",
+          "name": "poteter",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 1,
+          "unit": "stk",
+          "name": "brokkoli",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 1,
+          "unit": "pose",
+          "name": "brun saus",
+          "section": "Tørrvarer"
+        }
+      ]
+    },
+    {
+      "id": "r19",
+      "name": "Pulled pork",
+      "desc": "Langtidsbakt svinenakke i BBQ-saus, i burgerbrød med coleslaw.",
+      "time": 300,
+      "category": "Helgekos",
+      "servings": 4,
+      "favorite": false,
+      "ingredients": [
+        {
+          "qty": 1.5,
+          "unit": "kg",
+          "name": "svinenakke",
+          "section": "Kjøtt og fisk"
+        },
+        {
+          "qty": 1,
+          "unit": "stk",
+          "name": "BBQ-saus",
+          "section": "Hermetikk og saus"
+        },
+        {
+          "qty": 4,
+          "unit": "stk",
+          "name": "hamburgerbrød",
+          "section": "Brød og bakst"
+        },
+        {
+          "qty": 0.5,
+          "unit": "stk",
+          "name": "kålhode",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 2,
+          "unit": "stk",
+          "name": "gulrot",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 1,
+          "unit": "dl",
+          "name": "majones",
+          "section": "Hermetikk og saus"
+        }
+      ]
+    },
+    {
+      "id": "r20",
+      "name": "Kyllingfilet med ris",
+      "desc": "Stekt kyllingfilet med ris, grønnsaker og sweet chili.",
+      "time": 25,
+      "category": "Kylling",
+      "servings": 4,
+      "favorite": false,
+      "ingredients": [
+        {
+          "qty": 600,
+          "unit": "g",
+          "name": "kyllingfilet",
+          "section": "Kjøtt og fisk"
+        },
+        {
+          "qty": 300,
+          "unit": "g",
+          "name": "ris",
+          "section": "Tørrvarer"
+        },
+        {
+          "qty": 1,
+          "unit": "stk",
+          "name": "brokkoli",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 2,
+          "unit": "stk",
+          "name": "gulrot",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 1,
+          "unit": "stk",
+          "name": "sweet chili-saus",
+          "section": "Hermetikk og saus"
+        }
+      ]
+    },
+    {
+      "id": "r21",
+      "name": "Nachos",
+      "desc": "Ovnsnachos med kjøttdeig, ost, salsa og rømme.",
+      "time": 25,
+      "category": "Helgekos",
+      "servings": 4,
+      "favorite": false,
+      "ingredients": [
+        {
+          "qty": 1,
+          "unit": "pose",
+          "name": "nachochips",
+          "section": "Tørrvarer"
+        },
+        {
+          "qty": 400,
+          "unit": "g",
+          "name": "kjøttdeig",
+          "section": "Kjøtt og fisk"
+        },
+        {
+          "qty": 1,
+          "unit": "pose",
+          "name": "tacokrydder",
+          "section": "Krydder"
+        },
+        {
+          "qty": 1,
+          "unit": "glass",
+          "name": "salsa",
+          "section": "Hermetikk og saus"
+        },
+        {
+          "qty": 200,
+          "unit": "g",
+          "name": "revet ost",
+          "section": "Meieri og egg"
+        },
+        {
+          "qty": 1,
+          "unit": "beger",
+          "name": "rømme",
+          "section": "Meieri og egg"
+        }
+      ]
+    },
+    {
+      "id": "r22",
+      "name": "Grillburgere",
+      "desc": "Saftige burgere på grillen med cheddar og sprø salat.",
+      "time": 35,
+      "category": "Grill",
+      "servings": 4,
+      "favorite": false,
+      "ingredients": [
+        {
+          "qty": 600,
+          "unit": "g",
+          "name": "karbonadedeig",
+          "section": "Kjøtt og fisk"
+        },
+        {
+          "qty": 4,
+          "unit": "stk",
+          "name": "briochebrød",
+          "section": "Brød og bakst"
+        },
+        {
+          "qty": 4,
+          "unit": "skive",
+          "name": "cheddar",
+          "section": "Meieri og egg"
+        },
+        {
+          "qty": 2,
+          "unit": "stk",
+          "name": "tomat",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 1,
+          "unit": "stk",
+          "name": "isbergsalat",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 1,
+          "unit": "stk",
+          "name": "hamburgerdressing",
+          "section": "Hermetikk og saus"
+        }
+      ]
+    },
+    {
+      "id": "r23",
+      "name": "Grillspyd",
+      "desc": "Spyd med kylling og grønnsaker, servert med potetsalat.",
+      "time": 45,
+      "category": "Grill",
+      "servings": 4,
+      "favorite": false,
+      "ingredients": [
+        {
+          "qty": 600,
+          "unit": "g",
+          "name": "kyllingfilet",
+          "section": "Kjøtt og fisk"
+        },
+        {
+          "qty": 2,
+          "unit": "stk",
+          "name": "paprika",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 1,
+          "unit": "stk",
+          "name": "squash",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 1,
+          "unit": "stk",
+          "name": "rødløk",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 1,
+          "unit": "beger",
+          "name": "potetsalat",
+          "section": "Annet"
+        }
+      ]
+    },
+    {
+      "id": "r24",
+      "name": "Hjemmelaget kebab",
+      "desc": "Krydret kylling i pitabrød med salat og hvitløksdressing.",
+      "time": 40,
+      "category": "Helgekos",
+      "servings": 4,
+      "favorite": false,
+      "ingredients": [
+        {
+          "qty": 600,
+          "unit": "g",
+          "name": "kyllinglårfilet",
+          "section": "Kjøtt og fisk"
+        },
+        {
+          "qty": 1,
+          "unit": "pose",
+          "name": "kebabkrydder",
+          "section": "Krydder"
+        },
+        {
+          "qty": 4,
+          "unit": "stk",
+          "name": "pitabrød",
+          "section": "Brød og bakst"
+        },
+        {
+          "qty": 1,
+          "unit": "stk",
+          "name": "isbergsalat",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 2,
+          "unit": "stk",
+          "name": "tomat",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 1,
+          "unit": "stk",
+          "name": "agurk",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 1,
+          "unit": "stk",
+          "name": "rødløk",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 1,
+          "unit": "stk",
+          "name": "hvitløksdressing",
+          "section": "Hermetikk og saus"
+        }
+      ]
+    },
+    {
+      "id": "r25",
+      "name": "Kjøttdeig i pita",
+      "desc": "Rask hverdagsmiddag: krydret kjøttdeig og grønnsaker i pitabrød.",
+      "time": 20,
+      "category": "Hverdagsmiddag",
+      "servings": 4,
+      "favorite": true,
+      "ingredients": [
+        {
+          "qty": 400,
+          "unit": "g",
+          "name": "kjøttdeig",
+          "section": "Kjøtt og fisk"
+        },
+        {
+          "qty": 1,
+          "unit": "pose",
+          "name": "tacokrydder",
+          "section": "Krydder"
+        },
+        {
+          "qty": 6,
+          "unit": "stk",
+          "name": "pitabrød",
+          "section": "Brød og bakst"
+        },
+        {
+          "qty": 1,
+          "unit": "stk",
+          "name": "isbergsalat",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 1,
+          "unit": "stk",
+          "name": "agurk",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 2,
+          "unit": "stk",
+          "name": "tomat",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 1,
+          "unit": "stk",
+          "name": "hvitløksdressing",
+          "section": "Hermetikk og saus"
+        }
+      ]
+    },
+    {
+      "id": "r26",
+      "name": "Spaghetti bolognese",
+      "desc": "Kjøttsaus med tomat og spaghetti. Alltid en vinner.",
+      "time": 30,
+      "category": "Hverdagsmiddag",
+      "servings": 4,
+      "favorite": false,
+      "ingredients": [
+        {
+          "qty": 500,
+          "unit": "g",
+          "name": "kjøttdeig",
+          "section": "Kjøtt og fisk"
+        },
+        {
+          "qty": 2,
+          "unit": "boks",
+          "name": "hakkede tomater",
+          "section": "Hermetikk og saus"
+        },
+        {
+          "qty": 1,
+          "unit": "stk",
+          "name": "løk",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 2,
+          "unit": "fedd",
+          "name": "hvitløk",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 2,
+          "unit": "stk",
+          "name": "gulrot",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 400,
+          "unit": "g",
+          "name": "spaghetti",
+          "section": "Tørrvarer"
+        },
+        {
+          "qty": 75,
+          "unit": "g",
+          "name": "parmesan",
+          "section": "Meieri og egg"
+        }
+      ]
+    },
+    {
+      "id": "r27",
+      "name": "Pannekaker med bacon",
+      "desc": "Tykke pannekaker med sprøstekt bacon og blåbærsyltetøy.",
+      "time": 35,
+      "category": "Hverdagsmiddag",
+      "servings": 4,
+      "favorite": false,
+      "ingredients": [
+        {
+          "qty": 4,
+          "unit": "dl",
+          "name": "hvetemel",
+          "section": "Tørrvarer"
+        },
+        {
+          "qty": 7,
+          "unit": "dl",
+          "name": "melk",
+          "section": "Meieri og egg"
+        },
+        {
+          "qty": 4,
+          "unit": "stk",
+          "name": "egg",
+          "section": "Meieri og egg"
+        },
+        {
+          "qty": 300,
+          "unit": "g",
+          "name": "bacon",
+          "section": "Kjøtt og fisk"
+        },
+        {
+          "qty": 1,
+          "unit": "glass",
+          "name": "blåbærsyltetøy",
+          "section": "Hermetikk og saus"
+        },
+        {
+          "qty": 50,
+          "unit": "g",
+          "name": "smør",
+          "section": "Meieri og egg"
+        }
+      ]
+    },
+    {
+      "id": "r28",
+      "name": "Tomatsuppe med egg",
+      "desc": "Tomatsuppe med makaroni og kokte egg.",
+      "time": 20,
+      "category": "Suppe",
+      "servings": 4,
+      "favorite": false,
+      "ingredients": [
+        {
+          "qty": 2,
+          "unit": "boks",
+          "name": "hakkede tomater",
+          "section": "Hermetikk og saus"
+        },
+        {
+          "qty": 1,
+          "unit": "stk",
+          "name": "buljongterning",
+          "section": "Krydder"
+        },
+        {
+          "qty": 100,
+          "unit": "g",
+          "name": "makaroni",
+          "section": "Tørrvarer"
+        },
+        {
+          "qty": 4,
+          "unit": "stk",
+          "name": "egg",
+          "section": "Meieri og egg"
+        },
+        {
+          "qty": 1,
+          "unit": "stk",
+          "name": "løk",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 2,
+          "unit": "dl",
+          "name": "matfløte",
+          "section": "Meieri og egg"
+        }
+      ]
+    },
+    {
+      "id": "r29",
+      "name": "Kremet kyllingsuppe",
+      "desc": "Fyldig suppe med kylling, grønnsaker og fløte. Godt med brød til.",
+      "time": 30,
+      "category": "Suppe",
+      "servings": 4,
+      "favorite": false,
+      "ingredients": [
+        {
+          "qty": 400,
+          "unit": "g",
+          "name": "kyllingfilet",
+          "section": "Kjøtt og fisk"
+        },
+        {
+          "qty": 3,
+          "unit": "stk",
+          "name": "gulrot",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 1,
+          "unit": "stk",
+          "name": "purre",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 400,
+          "unit": "g",
+          "name": "poteter",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 3,
+          "unit": "dl",
+          "name": "matfløte",
+          "section": "Meieri og egg"
+        },
+        {
+          "qty": 2,
+          "unit": "stk",
+          "name": "buljongterning",
+          "section": "Krydder"
+        },
+        {
+          "qty": 1,
+          "unit": "stk",
+          "name": "loff",
+          "section": "Brød og bakst"
+        }
+      ]
+    },
+    {
+      "id": "r30",
+      "name": "Grønnsakswok med nudler",
+      "desc": "Vegetarwok med eggnudler, grønnsaker og cashewnøtter.",
+      "time": 20,
+      "category": "Vegetar",
+      "servings": 4,
+      "favorite": false,
+      "ingredients": [
+        {
+          "qty": 250,
+          "unit": "g",
+          "name": "eggnudler",
+          "section": "Tørrvarer"
+        },
+        {
+          "qty": 600,
+          "unit": "g",
+          "name": "wokgrønnsaker",
+          "section": "Frys"
+        },
+        {
+          "qty": 1,
+          "unit": "glass",
+          "name": "woksaus",
+          "section": "Hermetikk og saus"
+        },
+        {
+          "qty": 100,
+          "unit": "g",
+          "name": "cashewnøtter",
+          "section": "Tørrvarer"
+        },
+        {
+          "qty": 4,
+          "unit": "stk",
+          "name": "egg",
+          "section": "Meieri og egg"
+        }
+      ]
+    },
+    {
+      "id": "r31",
+      "name": "Vegetarlasagne",
+      "desc": "Lasagne med linser og grønnsaker i stedet for kjøtt.",
+      "time": 70,
+      "category": "Vegetar",
+      "servings": 4,
+      "favorite": false,
+      "ingredients": [
+        {
+          "qty": 200,
+          "unit": "g",
+          "name": "røde linser",
+          "section": "Tørrvarer"
+        },
+        {
+          "qty": 2,
+          "unit": "boks",
+          "name": "hakkede tomater",
+          "section": "Hermetikk og saus"
+        },
+        {
+          "qty": 1,
+          "unit": "stk",
+          "name": "squash",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 1,
+          "unit": "stk",
+          "name": "paprika",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 1,
+          "unit": "pk",
+          "name": "lasagneplater",
+          "section": "Tørrvarer"
+        },
+        {
+          "qty": 5,
+          "unit": "dl",
+          "name": "melk",
+          "section": "Meieri og egg"
+        },
+        {
+          "qty": 50,
+          "unit": "g",
+          "name": "smør",
+          "section": "Meieri og egg"
+        },
+        {
+          "qty": 200,
+          "unit": "g",
+          "name": "revet ost",
+          "section": "Meieri og egg"
+        }
+      ]
+    },
+    {
+      "id": "r32",
+      "name": "Pølser med lompe",
+      "desc": "Grillpølser med lompe, sennep, ketchup og sprøstekt løk.",
+      "time": 15,
+      "category": "Grill",
+      "servings": 4,
+      "favorite": false,
+      "ingredients": [
+        {
+          "qty": 8,
+          "unit": "stk",
+          "name": "grillpølser",
+          "section": "Kjøtt og fisk"
+        },
+        {
+          "qty": 1,
+          "unit": "pk",
+          "name": "lomper",
+          "section": "Brød og bakst"
+        },
+        {
+          "qty": 1,
+          "unit": "stk",
+          "name": "sennep",
+          "section": "Hermetikk og saus"
+        },
+        {
+          "qty": 1,
+          "unit": "stk",
+          "name": "ketchup",
+          "section": "Hermetikk og saus"
+        },
+        {
+          "qty": 1,
+          "unit": "pk",
+          "name": "sprøstekt løk",
+          "section": "Tørrvarer"
+        }
+      ]
+    },
+    {
+      "id": "r33",
+      "name": "Fårikål",
+      "desc": "Høstklassikeren med fårekjøtt og kål som får godgjøre seg lenge.",
+      "time": 150,
+      "category": "Helgekos",
+      "servings": 4,
+      "favorite": false,
+      "ingredients": [
+        {
+          "qty": 1.5,
+          "unit": "kg",
+          "name": "fårikålkjøtt",
+          "section": "Kjøtt og fisk"
+        },
+        {
+          "qty": 1,
+          "unit": "stk",
+          "name": "kålhode",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 1,
+          "unit": "ss",
+          "name": "hel pepper",
+          "section": "Krydder"
+        },
+        {
+          "qty": 1,
+          "unit": "kg",
+          "name": "poteter",
+          "section": "Frukt og grønt"
+        }
+      ]
+    }
+  ],
+  "plan": {
+    "2026-11-02": {
+      "recipeId": "r12",
+      "name": "Kremet pastarett",
+      "category": "Hverdagsmiddag",
+      "time": 25,
+      "persons": 3
+    },
+    "2026-11-03": {
+      "recipeId": "r05",
+      "name": "Kyllingwok",
+      "category": "Kylling",
+      "time": 20,
+      "persons": 3
+    },
+    "2026-11-04": {
+      "recipeId": "r25",
+      "name": "Kjøttdeig i pita",
+      "category": "Hverdagsmiddag",
+      "time": 20,
+      "persons": 3
+    },
+    "2026-11-05": {
+      "recipeId": "r18",
+      "name": "Koteletter",
+      "category": "Kjøtt",
+      "time": 30,
+      "persons": 3
+    },
+    "2026-11-06": {
+      "recipeId": "r16",
+      "name": "Kyllingcurry",
+      "category": "Kylling",
+      "time": 30,
+      "persons": 3
+    },
+    "2026-11-07": {
+      "recipeId": "r06",
+      "name": "Hjemmelaget pizza",
+      "category": "Helgekos",
+      "time": 75,
+      "persons": 3
+    },
+    "2026-11-08": {
+      "recipeId": "r07",
+      "name": "Lasagne",
+      "category": "Helgekos",
+      "time": 80,
+      "persons": 3
+    }
+  },
+  "extras": {}
+}

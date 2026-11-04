@@ -1675,8 +1675,8 @@
         },
         {
           "qty": 1,
-          "unit": "stk",
-          "name": "båt hvitløk",
+          "unit": "fedd",
+          "name": "hvitløk",
           "section": "Frukt og grønt"
         },
         {
@@ -1689,7 +1689,7 @@
           "qty": 10,
           "unit": "g",
           "name": "frisk estragon",
-          "section": "Tørrvarer"
+          "section": "Frukt og grønt"
         },
         {
           "qty": 200,
@@ -1701,7 +1701,7 @@
           "qty": 65,
           "unit": "g",
           "name": "frisk spinat",
-          "section": "Tørrvarer"
+          "section": "Frukt og grønt"
         }
       ]
     },
@@ -1723,8 +1723,8 @@
         },
         {
           "qty": 2,
-          "unit": "stk",
-          "name": "båter hvitløk",
+          "unit": "fedd",
+          "name": "hvitløk",
           "section": "Frukt og grønt"
         },
         {
@@ -1791,7 +1791,7 @@
           "qty": 2.5,
           "unit": "dl",
           "name": "kyllingkraft",
-          "section": "Kjøtt og fisk"
+          "section": "Hermetikk og saus"
         },
         {
           "qty": 2,

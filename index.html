@@ -8,7 +8,7 @@
 <meta name="description" content="Middagsplanlegger for familien Kile: ukeplan, oppskrifter, handleliste og statistikk.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23d1552f'/%3E%3Ccircle cx='32' cy='33' r='15' fill='%23fff'/%3E%3Ccircle cx='32' cy='33' r='10' fill='none' stroke='%23d1552f' stroke-width='2' opacity='.45'/%3E%3Cpath d='M10 15v10a3 3 0 0 0 3 3v20M13 15v9M16 15v10a3 3 0 0 1-3 3' stroke='%23fff' stroke-width='2.6' stroke-linecap='round' fill='none'/%3E%3Cpath d='M51 48V15c-3 2-4 7-4 13h4' stroke='%23fff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round' fill='%23fff'/%3E%3C/svg%3E">
 <style>
-/* Middags panikk™ v1.0.0 – se CHANGELOG.md */
+/* Middags panikk™ v1.1.0 – se CHANGELOG.md */
 :root{
   --bg:#f7f3ec; --bg2:#efe7da; --card:#fffdf9; --card2:#f5efe5; --line:#e7dccb; --line2:#d6c7af;
   --ink:#2a231c; --muted:#76695a; --dim:#a19482;
@@ -319,7 +319,7 @@ main{max-width:1280px;margin:0 auto;padding:18px max(16px,env(safe-area-inset-ri
    Alle kan se. Redigering låses opp med GitHub-nøkkel.
    ========================================================= */
 const APP_NAME = "Middags panikk™";
-const APP_VERSION = "1.0.0";
+const APP_VERSION = "1.1.0";
 const GH = { owner: "kilemann", repo: "Middagspanikk.io", path: "meny.json", branch: "main" };
 
 const KEY = k => "middagspanikk." + k;
@@ -452,6 +452,7 @@ function cleanRecipe(r){
     category: CATS.includes(r.category) ? r.category : "Hverdagsmiddag",
     servings: clampInt(r.servings, 1, 20, 4),
     favorite: !!r.favorite,
+    url: /^https?:\/\/\S+$/i.test(String(r.url || "").trim()) ? String(r.url).trim().slice(0, 500) : "",
     ingredients: (Array.isArray(r.ingredients) ? r.ingredients : []).map(cleanIng).filter(g => g.name),
   };
 }
@@ -528,9 +529,9 @@ async function load(){
     const rem = await fetchRemote();
     if (canEdit() && sync.dirty && cached){
       // endringer på denne enheten ble ikke lastet opp sist
-      if (rem.missing || !rem.sha || rem.sha === sync.sha){ loadState = "ok"; refresh(); save(); return; }
+      if (rem.missing || !rem.sha || rem.sha === sync.sha){ loadState = "ok"; refresh(); save(); runImport(); return; }
       const mine = await confirmBox("Ulagrede endringer", "Denne enheten har endringer som ikke ble lagret, og planen på nettet er endret siden. Vil du beholde endringene fra denne enheten?", "Behold mine", false, "Bruk den på nettet");
-      if (mine){ sync.sha = rem.sha; saveSync(); loadState = "ok"; refresh(); save(); return; }
+      if (mine){ sync.sha = rem.sha; saveSync(); loadState = "ok"; refresh(); save(); runImport(); return; }
     }
     if (rem.data) db = rem.data; else if (!cached) db = seed();
     if (rem.sha) sync.sha = rem.sha;
@@ -542,6 +543,7 @@ async function load(){
     else { db = seed(); loadState = "ok"; toast("Fikk ikke kontakt med GitHub – viser standardrettene"); }
   }
   refresh();
+  runImport();
 }
 
 /* Lagrer på enheten straks, og til GitHub litt etter siste endring (så mange klikk blir én lagring) */
@@ -651,6 +653,7 @@ async function afterUnlock(){
   if (rem.data) db = rem.data;
   writeCache(); refresh();
   if (rem.missing) save(); else setSync("ok");
+  runImport();
 }
 
 /* ---------- oppslag ---------- */
@@ -776,6 +779,7 @@ function drawNav(){
   $("#bottom").innerHTML = VIEWS.map(([k, , short]) => `<a class="navbtn${view === k ? " on" : ""}" href="#/${k}" aria-label="${short}">${ICONS[k]}<span>${short}</span></a>`).join("");
 }
 function route(){
+  if (takeImportFromHash()){ refresh(); runImport(); return; }
   const h = (location.hash.replace(/^#\/?/, "").split("/")[0] || "uke");
   view = VIEWS.some(v => v[0] === h) ? h : "uke";
   refresh();
@@ -978,7 +982,7 @@ function filterHtml(f, favOnly){
 function viewRecipes(){
   return `<div class="vhead">
       <div><h1>Oppskrifter</h1><p class="muted">Rettene familien lager. Trykk på en rett for ingredienser.</p></div>
-      <button class="btn pri eo" data-act="newRecipe">＋ Ny rett</button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn eo" data-act="bookmarklet">📥 Fra nettside</button><button class="btn pri eo" data-act="newRecipe">＋ Ny rett</button></div>
     </div>
     ${filterHtml(rf, false)}
     <div class="tools"><span class="count" id="cnt"></span></div>
@@ -1032,6 +1036,7 @@ function recipeDetail(id){
     </div>
     <div class="lbl-row"><b>Ingredienser</b><div class="seg" id="ps"><button data-p="3">3 pers</button><button data-p="4">4 pers</button></div></div>
     <ul class="ilist" id="il"></ul>
+    ${r.url ? `<p style="margin:14px 0 0"><a href="${esc(r.url)}" target="_blank" rel="noopener noreferrer">🔗 Se fremgangsmåten hos ${esc(hostOf(r.url))}</a></p>` : ""}
     <div class="acts">
       <button class="btn danger grow eo" id="del">🗑 Slett</button>
       <button class="btn eo" id="favb">${r.favorite ? "★ Fjern favoritt" : "☆ Favoritt"}</button>
@@ -1094,25 +1099,28 @@ function ingRow(g){
     <button type="button" class="x" data-rm aria-label="Fjern ingrediens">✕</button>
   </div>`;
 }
-function recipeForm(id){
+function recipeForm(id, pre){
   const r = id ? recipeById(id) : null;
+  const src = r || pre || null;   // r = retten som redigeres, pre = importert forslag
   const known = new Map();
   for (const x of db.recipes) for (const g of x.ingredients) if (!known.has(g.name.toLowerCase())) known.set(g.name.toLowerCase(), g);
   openModal(`<button class="mclose" data-close aria-label="Lukk">✕</button>
-    <h2>${r ? "Rediger rett" : "Ny rett"}</h2>
+    <h2>${r ? "Rediger rett" : pre ? "📥 Importert rett" : "Ny rett"}</h2>
+    ${pre ? `<p class="muted" style="margin:0">Hentet fra ${esc(hostOf(pre.url))}. Se over mengder, kategori og avdeling før du lagrer.${pre.skipped ? ` ${pre.skipped} linje${pre.skipped > 1 ? "r" : ""} uten ingrediens ble hoppet over.` : ""}</p>` : ""}
     <form class="form" id="rfm" novalidate>
-      <div class="field full"><label for="fn">Navn</label><input id="fn" required maxlength="80" value="${r ? esc(r.name) : ""}" autofocus></div>
-      <div class="field full"><label for="fd">Kort beskrivelse</label><textarea id="fd" maxlength="300">${r ? esc(r.desc) : ""}</textarea></div>
-      <div class="field"><label for="ft">Tilberedningstid (min)</label><input id="ft" type="number" min="1" max="1440" inputmode="numeric" value="${r ? r.time : 30}"></div>
-      <div class="field"><label for="fc">Kategori</label><select id="fc">${CATS.map(c => `<option${(r ? r.category : "Hverdagsmiddag") === c ? " selected" : ""}>${c}</option>`).join("")}</select></div>
-      <div class="field"><label for="fs">Oppskriften er for (personer)</label><input id="fs" type="number" min="1" max="20" inputmode="numeric" value="${r ? r.servings : 4}"></div>
-      <div class="field" style="justify-content:flex-end"><label class="check"><input type="checkbox" id="ffav"${r && r.favorite ? " checked" : ""}> ★ Favoritt</label></div>
+      <div class="field full"><label for="fn">Navn</label><input id="fn" required maxlength="80" value="${src ? esc(src.name) : ""}" autofocus></div>
+      <div class="field full"><label for="fd">Kort beskrivelse</label><textarea id="fd" maxlength="300">${src ? esc(src.desc) : ""}</textarea></div>
+      <div class="field"><label for="ft">Tilberedningstid (min)</label><input id="ft" type="number" min="1" max="1440" inputmode="numeric" value="${src ? src.time : 30}"></div>
+      <div class="field"><label for="fc">Kategori</label><select id="fc">${CATS.map(c => `<option${(src ? src.category : "Hverdagsmiddag") === c ? " selected" : ""}>${c}</option>`).join("")}</select></div>
+      <div class="field"><label for="fs">Oppskriften er for (personer)</label><input id="fs" type="number" min="1" max="20" inputmode="numeric" value="${src ? src.servings : 4}"></div>
+      <div class="field" style="justify-content:flex-end"><label class="check"><input type="checkbox" id="ffav"${src && src.favorite ? " checked" : ""}> ★ Favoritt</label></div>
       <div class="field full"><label>Ingredienser</label>
         <div class="ing-head"><span>Mengde</span><span>Enhet</span><span>Navn</span><span>Avdeling</span><span></span></div>
-        <div class="ings" id="ings">${(r && r.ingredients.length ? r.ingredients : [null, null, null]).map(ingRow).join("")}</div>
+        <div class="ings" id="ings">${(src && src.ingredients.length ? src.ingredients : [null, null, null]).map(ingRow).join("")}</div>
         <button type="button" class="btn sm" id="addIng" style="margin-top:8px;justify-self:start">＋ Ingrediens</button>
         <datalist id="ingNames">${[...known.values()].map(g => `<option value="${esc(g.name)}">`).join("")}</datalist>
       </div>
+      <div class="field full"><label for="fu">Lenke til oppskriften (valgfri)</label><input id="fu" type="url" inputmode="url" maxlength="500" placeholder="https://…" value="${src && src.url ? esc(src.url) : ""}"></div>
     </form>
     <p id="fmsg" role="alert" style="color:var(--danger);min-height:1.2em;margin:8px 0 0"></p>
     <div class="acts"><button class="btn" data-close>Avbryt</button><button class="btn pri" type="submit" form="rfm">Lagre</button></div>`,
@@ -1140,7 +1148,7 @@ function recipeForm(id){
         name: row.querySelector('[data-f="name"]').value, section: row.querySelector('[data-f="section"]').value,
       })).filter(g => g.name);
       const data = cleanRecipe({ id: r ? r.id : uid(), name, desc: $("#fd", m).value, time: $("#ft", m).value, category: $("#fc", m).value,
-        servings: $("#fs", m).value, favorite: $("#ffav", m).checked, ingredients });
+        servings: $("#fs", m).value, favorite: $("#ffav", m).checked, url: $("#fu", m).value, ingredients });
       if (r){
         Object.assign(r, data);
         for (const e2 of Object.values(db.plan)) if (e2.recipeId === r.id){ e2.name = r.name; e2.category = r.category; e2.time = r.time; }
@@ -1149,6 +1157,176 @@ function recipeForm(id){
       toast(r ? `Lagret ${data.name}` : `${catIcon(data.category)} ${data.name} er lagt til`);
     };
   }, "wide");
+}
+
+/* ---------- import fra nettsider ----------
+   Bokmerket («bookmarklet») kjører på oppskriftssiden og leser oppskriften i schema.org-format
+   (som de fleste store oppskriftssider har for Google). Den sendes hit i adressen: #/import/<json>.
+   Adressen etter # sendes aldri til noen server. Her tolkes ingrediensene og skjemaet fylles ut. */
+const UNIT_ALIAS = {
+  g: ["g"], gr: ["g"], gram: ["g"], kg: ["kg"], kilo: ["kg"],
+  dl: ["dl"], l: ["l"], liter: ["l"], ml: ["dl", 0.01], cl: ["dl", 0.1],
+  ss: ["ss"], spiseskje: ["ss"], spiseskjeer: ["ss"], ts: ["ts"], teskje: ["ts"], teskjeer: ["ts"],
+  stk: ["stk"], stykk: ["stk"], stykker: ["stk"],
+  pk: ["pk"], pakke: ["pk"], pakker: ["pk"], pakning: ["pk"], pakninger: ["pk"],
+  pose: ["pose"], poser: ["pose"], boks: ["boks"], bokser: ["boks"], glass: ["glass"], beger: ["beger"],
+  fedd: ["fedd"], skive: ["skive"], skiver: ["skive"], bunt: ["bunt"], bunter: ["bunt"],
+  terning: ["stk"], terninger: ["stk"],
+  klype: ["", 0], klyper: ["", 0], dryss: ["", 0], neve: ["stk"], never: ["stk"],
+};
+const FRAC = { "½": .5, "¼": .25, "¾": .75, "⅓": 1 / 3, "⅔": 2 / 3, "⅛": .125 };
+const SEC_RULES = [
+  ["Frys", /\b(frossen|frosne|fryst|frosset)/],
+  ["Hermetikk og saus", /hakkede tomater|knuste tomater|tomatpur|tomatsaus|kokosmelk|bønner|kikerter|saus\b|saus$|ketchup|sennep|majones|soya|pesto|salsa|dressing|syltetøy|currypaste|hermetisk|\bmais\b/],
+  ["Krydder", /\bsalt\b|pepper\b|krydder|pulver|karri|spisskummen|kanel|oregano|timian|rosmarin|buljong|chiliflak|laurbær|muskat|kardemomme|nellik/],
+  ["Brød og bakst", /brød|lefse|tortilla|pita|lompe|rundstykk|nanbrød|\bnan\b|baguette|loff|wraps?\b|ciabatta/],
+  ["Tørrvarer", /mel\b|\bris\b|pasta|spaghetti|makaroni|nudler|sukker|havregryn|linser|bulgur|couscous|olje|eddik|nøtter|mandler|panko|griljermel|maisenna|bakepulver|natron|lasagneplater|tacoskjell|nachochips|honning/],
+  ["Kjøtt og fisk", /kjøtt|deig|kylling|biff|filet|svin|bacon|skinke|pølse|laks|torsk|\bsei\b|fisk|reke|kotelett|lår|entrecote|\blam|karbonade|chorizo|salami|kalkun|ørret|makrell|hyse|kveite|skrei|tunfisk|kjøttkak|medisterkak|ribbe|nakke/],
+  ["Meieri og egg", /melk|fløte|rømme|\bost\b|ost$|smør|\begg\b|egg$|eggeplom|yoghurt|crème|creme|kesam|parmesan|mozzarella|cheddar|feta|kremost|gjær|kulturmelk/],
+  ["Frukt og grønt", /løk|potet|gulrot|tomat|agurk|salat|paprika|brokkoli|blomkål|squash|sopp|sjampinjong|purre|sitron|lime|avokado|spinat|kål|chili|ingefær|persille|koriander|basilikum|gressløk|dill|selleri|eple|banan|bær|erter|asparges|aubergine|bønnespirer|reddik|rødbet|kålrot|søtpotet|mango|pasjon|urter|ruccola|sukkererter|kjerne/],
+];
+const htmlText = s => { const d = new DOMParser().parseFromString(String(s ?? ""), "text/html"); return (d.body.textContent || "").replace(/\s+/g, " ").trim(); };
+const hostOf = u => { try{ return new URL(u).hostname.replace(/^www\./, ""); }catch(e){ return "nettsiden"; } };
+function isoMinutes(v){
+  const m = String(v || "").match(/^P(?:(\d+)D)?(?:T(?:(\d+(?:\.\d+)?)H)?(?:(\d+(?:\.\d+)?)M)?(?:\d+(?:\.\d+)?S)?)?$/i);
+  if (!m) return 0;
+  return Math.round((+m[1] || 0) * 1440 + (+m[2] || 0) * 60 + (+m[3] || 0));
+}
+function yieldNum(v){
+  const m = [].concat(v || []).join(" ").match(/\d+/);
+  return m ? clampInt(+m[0], 1, 20, 4) : 4;
+}
+function readNum(str){
+  const s = str.trim();
+  if (FRAC[s]) return FRAC[s];
+  let m = s.match(/^(\d+)\s*([½¼¾⅓⅔⅛])$/); if (m) return +m[1] + FRAC[m[2]];
+  m = s.match(/^(\d+)\s+(\d+)\/(\d+)$/); if (m) return +m[1] + m[2] / m[3];
+  m = s.match(/^(\d+)\/(\d+)$/); if (m) return m[1] / m[2];
+  return parseNum(s);
+}
+function guessSection(name, known){
+  const n = name.toLowerCase();
+  if (known && known.has(n)) return known.get(n).section;
+  for (const [sec, re] of SEC_RULES.slice(0, 3)) if (re.test(n)) return sec;   // frys, hermetikk, krydder går foran
+  if (known){
+    let best = null;   // lengste kjente navn som står i navnet, f.eks. «kjøttdeig» i «kjøttdeig av storfe»
+    for (const [k, g] of known) if (k.length > 2 && n.includes(k) && (!best || k.length > best[0].length)) best = [k, g];
+    if (best) return best[1].section;
+  }
+  for (const [sec, re] of SEC_RULES) if (re.test(n)) return sec;
+  return "Annet";
+}
+/* «2 ss olivenolje», «400g kjøttdeig», «1 1/2 dl fløte», «2–3 fedd hvitløk, finhakket», «Salt og pepper» */
+function parseIngLine(line, known){
+  let s = htmlText(line).replace(/^[-•*·]\s*/, "").replace(/^(ca\.?|cirka|omtrent|ev\.?|evt\.?)\s+/i, "");
+  if (!s) return null;
+  const NUM = "(?:\\d+\\s+\\d+\\/\\d+|\\d+\\/\\d+|\\d+\\s*[½¼¾⅓⅔⅛]|[½¼¾⅓⅔⅛]|\\d+(?:[.,]\\d+)?)";
+  const m = s.match(new RegExp(`^(${NUM})(?:\\s*[-–]\\s*(${NUM}))?\\s*(.*)$`));
+  let qty = 0, unit = "stk", rest = s;
+  if (m && m[3] !== undefined){
+    qty = readNum(m[2] || m[1]);   // spenn som «2–3»: kjøp det største
+    rest = m[3];
+    const mx = rest.match(new RegExp(`^[x×]\\s*(${NUM})\\s*(.*)$`, "i"));   // «2 x 400 g»
+    if (mx){ qty *= readNum(mx[1]); rest = mx[2]; }
+    const w = rest.match(/^([a-zæøå]+)\.?(?:\s+|$)(.*)$/i);
+    const a = w && UNIT_ALIAS[w[1].toLowerCase()];
+    if (a){
+      rest = w[2];
+      if (a[0] === ""){ qty = 0; unit = "stk"; }
+      else { unit = a[0]; if (a.length > 1) qty *= a[1]; }
+    }
+  }
+  let name = rest.replace(/\([^)]*\)/g, " ").replace(/^(av|med)\s+/i, "").replace(/\s+/g, " ").trim();
+  if (qty && name.includes(",")) name = name.split(",")[0].trim();   // «løk, finhakket» → «løk»
+  name = name.replace(/[.,;:]+$/, "");
+  if (!name) return null;
+  if (!/^[A-ZÆØÅ]{2}/.test(name)) name = name.charAt(0).toLowerCase() + name.slice(1);
+  return { qty: +qty.toFixed(3), unit, name: name.slice(0, 80), section: guessSection(name, known) };
+}
+function guessCategory(name, tags, ingText){
+  const t = (name + " " + tags).toLowerCase(), all = t + " " + ingText.toLowerCase();
+  const FISH = /laks|torsk|\bsei\b|fisk|reke|ørret|makrell|sjømat|hyse|kveite|skrei|tunfisk|scampi/;
+  const CHICKEN = /kylling|høne|kalkun/;
+  const MEAT = /kjøtt|biff|svin|deig|bacon|pølse|\blam|storfe|karbonade|skinke|entrecote|filet|kotelett|ribbe|nakke|chorizo|kjøttkak/;
+  if (/suppe/.test(t)) return "Suppe";
+  if (/grill/.test(t)) return "Grill";
+  if (/vegetar|vegansk|vegan\b|plantebasert/.test(t)) return "Vegetar";
+  if (FISH.test(name.toLowerCase())) return "Fisk";
+  if (CHICKEN.test(name.toLowerCase())) return "Kylling";
+  if (CHICKEN.test(all)) return "Kylling";
+  if (FISH.test(all)) return "Fisk";
+  if (MEAT.test(all)) return "Kjøtt";
+  return "Hverdagsmiddag";
+}
+/* data fra bokmerket → forslag til rett (lagres ikke før du trykker Lagre) */
+function recipeFromImport(d){
+  const known = new Map();
+  for (const x of db.recipes) for (const g of x.ingredients) if (!known.has(g.name.toLowerCase())) known.set(g.name.toLowerCase(), g);
+  const lines = [].concat(d.ings || []).map(String);
+  const ingredients = lines.map(l => parseIngLine(l, known)).filter(Boolean);
+  const name = htmlText(d.name).slice(0, 80);
+  const time = isoMinutes(d.time) || (isoMinutes(d.prep) + isoMinutes(d.cook)) || 30;
+  return {
+    name, desc: htmlText(d.desc).slice(0, 300), time: clampInt(time, 1, 1440, 30),
+    category: guessCategory(name, htmlText(d.cat), ingredients.map(g => g.name).join(" ")),
+    servings: yieldNum(d.yield), favorite: false,
+    url: /^https?:\/\//i.test(String(d.url || "")) ? String(d.url).slice(0, 500) : "",
+    ingredients, skipped: lines.length - ingredients.length,
+  };
+}
+let pendingImport = null;
+function takeImportFromHash(){
+  const m = location.hash.match(/^#\/?import\/(.+)$/);
+  if (!m) return false;
+  try{
+    const d = JSON.parse(decodeURIComponent(m[1]));
+    if (!d || typeof d !== "object" || !String(d.name || "").trim()) throw new Error("mangler navn");
+    pendingImport = d;
+  }catch(e){ setTimeout(() => toast("Klarte ikke å lese oppskriften fra bokmerket"), 0); }
+  view = "oppskrifter";
+  history.replaceState(null, "", location.pathname + location.search + "#/oppskrifter");
+  return true;
+}
+function runImport(){
+  if (!pendingImport || loadState !== "ok" || !db.recipes) return;
+  if (!canEdit()){ toast("Lås opp redigering for å lagre oppskriften"); unlockForm(); return; }
+  const d = pendingImport; pendingImport = null;
+  const pre = recipeFromImport(d);
+  const same = db.recipes.find(r => (pre.url && r.url === pre.url) || r.name.toLowerCase() === pre.name.toLowerCase());
+  if (same){ toast(`«${same.name}» finnes allerede`); recipeDetail(same.id); return; }
+  recipeForm(null, pre);
+}
+/* koden som ligger i bokmerket. Kjører på oppskriftssiden, ikke her. */
+function bookmarkletCode(appUrl){
+  const code = `(()=>{const A=${JSON.stringify(appUrl)};let R=null;const f=o=>{if(!o||typeof o!=="object"||R)return;if(Array.isArray(o)){o.forEach(f);return}const t=[].concat(o["@type"]||[]);if(t.includes("Recipe")){R=o;return}f(o["@graph"]);f(o.mainEntity);f(o.mainEntityOfPage)};document.querySelectorAll('script[type="application/ld+json"]').forEach(s=>{try{f(JSON.parse(s.textContent))}catch(e){}});if(!R){alert("Fant ingen oppskrift på denne siden.\\n\\nMiddags panikk leser oppskrifter i schema.org-format, som de fleste store oppskriftssider bruker. Åpne selve oppskriften og prøv igjen.");return}const x=v=>Array.isArray(v)?v.map(x).filter(Boolean).join(", "):v&&typeof v==="object"?String(v.name||v.text||""):String(v==null?"":v);const d={v:1,name:x(R.name),desc:x(R.description).slice(0,400),time:x(R.totalTime),prep:x(R.prepTime),cook:x(R.cookTime),yield:x(R.recipeYield),ings:[].concat(R.recipeIngredient||R.ingredients||[]).map(x).filter(Boolean),cat:[R.recipeCategory,R.recipeCuisine,R.keywords].map(x).join(", ").slice(0,300),url:location.href.split("#")[0]};const u=A+"#/import/"+encodeURIComponent(JSON.stringify(d));if(!window.open(u,"_blank"))location.href=u})()`;
+  return "javascript:" + encodeURIComponent(code);
+}
+function bookmarkletForm(){
+  const href = bookmarkletCode(location.origin + location.pathname);
+  openModal(`<button class="mclose" data-close aria-label="Lukk">✕</button>
+    <h2>📥 Hent oppskrifter fra nettsider</h2>
+    <p class="muted" style="margin:0">Et bokmerke som henter oppskriften du ser på, og åpner den her med skjemaet ferdig utfylt. Virker på oppskriftssider som legger oppskriften inn i schema.org-format for Google, noe de fleste store sider og matblogger gjør.</p>
+    <h3 style="margin-top:16px">💻 PC</h3>
+    <p style="margin:6px 0">Dra knappen opp til bokmerkelinjen (Ctrl+Shift+B viser den):</p>
+    <p><a class="btn pri" id="bm" href="${esc(href)}" draggable="true">📥 Til Middags panikk</a></p>
+    <h3 style="margin-top:16px">📱 Mobil</h3>
+    <ol class="steps">
+      <li>Trykk <b>Kopier bokmerket</b> under.</li>
+      <li>Lag et bokmerke av denne siden (⭐ / Del → Legg til bokmerke).</li>
+      <li>Rediger bokmerket: kall det <b>Til Middags panikk</b> og lim inn i adressefeltet (erstatt det som står der).</li>
+      <li>På en oppskrift: <b>Chrome</b> – skriv «Til Middags» i adressefeltet og trykk på bokmerket i listen. <b>Safari</b> – åpne Bokmerker og trykk på det.</li>
+    </ol>
+    <button class="btn" id="cp">📋 Kopier bokmerket</button>
+    <textarea id="cpt" readonly hidden style="width:100%;height:90px;margin-top:8px;font:12px/1.3 monospace;border:1px solid var(--line);border-radius:10px;background:var(--card2);padding:8px">${esc(href)}</textarea>
+    <p class="muted" style="font-size:.85rem;margin-top:14px">Bokmerket leser bare oppskriften på siden du står på og sender den til denne appen. Fremgangsmåten kopieres ikke – retten får en lenke til originalen. Oppdater bokmerket hvis appen får ny adresse.</p>
+    <div class="acts"><button class="btn" data-close>Lukk</button></div>`,
+  (m) => {
+    $("#bm", m).onclick = e => { e.preventDefault(); toast("Dra knappen til bokmerkelinjen – den virker på oppskriftssider, ikke her"); };
+    $("#cp", m).onclick = async () => {
+      try{ await navigator.clipboard.writeText(href); toast("📋 Kopiert – lim det inn som adresse i et nytt bokmerke"); }
+      catch(e){ const t = $("#cpt", m); t.hidden = false; t.focus(); t.select(); toast("Marker teksten og kopier den"); }
+    };
+  });
 }
 
 /* ---------- handleliste ---------- */
@@ -1305,6 +1483,7 @@ function menuForm(){
       <button class="btn" id="exp">⬇️ Eksporter data (JSON)</button>
       <button class="btn eo" id="imp">⬆️ Importer data (JSON)</button>
       <button class="btn" id="lk">${canEdit() ? "🔒 Lås redigering på denne enheten" : "🔓 Lås opp redigering"}</button>
+      <button class="btn eo" id="bml">📥 Hent oppskrifter fra nettsider</button>
       <a class="btn" href="https://github.com/${GH.owner}/${GH.repo}/blob/${GH.branch}/CHANGELOG.md" target="_blank" rel="noopener">📝 Endringslogg</a>
     </div>
     <input type="file" id="impf" accept="application/json,.json" hidden>
@@ -1317,6 +1496,7 @@ function menuForm(){
     drawP();
     $("#dp", m).onclick = e => { const b = e.target.closest("button"); if (!b) return; db.settings.persons = +b.dataset.p; save(); drawP(); };
     $("#exp", m).onclick = () => exportData();
+    $("#bml", m).onclick = () => { close(); bookmarkletForm(); };
     $("#imp", m).onclick = () => $("#impf", m).click();
     $("#impf", m).onchange = e => { const f = e.target.files[0]; if (f){ close(); importData(f); } };
     $("#lk", m).onclick = async () => {
@@ -1427,6 +1607,7 @@ document.addEventListener("click", e => {
     }
     case "fav": e.stopPropagation(); toggleFav(id); drawGrid(); break;
     case "newRecipe": recipeForm(); break;
+    case "bookmarklet": bookmarkletForm(); break;
     case "shopDay": {
       const wk = weekKey(weekStart), st = shopFor(wk);
       st.off = st.off.includes(ds) ? st.off.filter(x => x !== ds) : [...st.off, ds];
@@ -1497,6 +1678,7 @@ matchMedia("(prefers-color-scheme: dark)").addEventListener("change", applyTheme
 
 /* ---------- start ---------- */
 applyTheme();
+takeImportFromHash();
 { const h = (location.hash.replace(/^#\/?/, "").split("/")[0] || "uke"); view = VIEWS.some(v => v[0] === h) ? h : "uke"; }
 load();
 </script>

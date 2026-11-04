@@ -298,15 +298,35 @@ main{max-width:1280px;margin:0 auto;padding:18px max(16px,env(safe-area-inset-ri
 .toast button{border:0;background:none;color:var(--accent);font-weight:800;padding:2px 4px}
 .loading{display:grid;place-items:center;min-height:50vh;color:var(--muted)}
 @media (prefers-reduced-motion:reduce){ *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;scroll-behavior:auto !important} }
+
+/* ---------- navn, versjon og info-knapp (som i Himmelur) ---------- */
+.ai-row{display:flex;align-items:center;gap:8px;min-width:0;flex:0 1 auto}
+.brand .bt{display:flex;flex-direction:column;min-width:0;line-height:1.1}
+.brand .ai-ver{font:500 11px ui-monospace,monospace;color:var(--muted);letter-spacing:0;margin-top:1px;overflow:visible}
+.ai-row .brand{flex:0 1 auto}
+.ai-btn{all:unset;box-sizing:border-box;cursor:pointer;flex:none;width:32px;height:32px;border-radius:50%;border:1.5px solid var(--line2);
+  display:grid;place-items:center;font:800 15px var(--head);color:var(--muted);background:var(--card)}
+.ai-btn:hover{border-color:var(--accent);color:var(--accent)} .ai-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.info h3{font:800 1rem var(--head);margin:16px 0 6px}
+.info p,.info li{line-height:1.55}
+.info p{margin:0 0 8px} .info ul{margin:0 0 8px;padding-left:20px}
+.info .vlog{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:.92rem;line-height:1.5}
+.info .vlog b{font:500 .82rem ui-monospace,monospace;white-space:nowrap;color:var(--muted)}
+@media (max-width:420px){ .brand svg{width:28px;height:28px} .brand{gap:8px} }
+@media (max-width:379px){ .ai-row .brand svg{display:none} }
+@media (max-width:359px){ .brand .bt{display:none} }
 </style>
 </head>
 <body class="ro">
 <header class="top">
   <div class="top-in">
+    <div class="ai-row">
     <a class="brand" href="#/uke" aria-label="Middags panikk – til ukeplanen">
       <svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="var(--accent)"/><circle cx="32" cy="33" r="15" fill="#fff"/><circle cx="32" cy="33" r="10" fill="none" stroke="var(--accent)" stroke-width="2" opacity=".45"/><path d="M10 15v10a3 3 0 0 0 3 3v20M13 15v9M16 15v10a3 3 0 0 1-3 3" stroke="#fff" stroke-width="2.6" stroke-linecap="round" fill="none"/><path d="M51 48V15c-3 2-4 7-4 13h4" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="#fff"/></svg>
-      <span>Middags panikk<sup>™</sup></span>
+      <span class="bt"><span>Middags panikk<sup>™</sup></span><span class="ai-ver" id="brandVer"></span></span>
     </a>
+    <button type="button" class="ai-btn" data-act="info" aria-label="Om appen og hjelp" title="Om appen og hjelp" aria-haspopup="dialog">i</button>
+    </div>
     <nav class="tabs" id="tabs" aria-label="Hovedmeny"></nav>
     <div class="right">
       <span id="lockTop"></span>
@@ -328,7 +348,7 @@ main{max-width:1280px;margin:0 auto;padding:18px max(16px,env(safe-area-inset-ri
    Alle kan se. Redigering låses opp med GitHub-nøkkel.
    ========================================================= */
 const APP_NAME = "Middags panikk™";
-const APP_VERSION = "1.1.1";
+const APP_VERSION = "1.2.0";
 const GH = { owner: "kilemann", repo: "Middagspanikk.io", path: "meny.json", branch: "main" };
 
 const KEY = k => "middagspanikk." + k;
@@ -1629,6 +1649,30 @@ function toast(msg, undo){
   if (undo) el.querySelector("button").onclick = () => { clearTimeout(t); el.remove(); undo(); };
 }
 
+
+/* ---------- info-vindu (i) ---------- */
+function infoForm(){
+  openModal(`<button class="mclose" data-close aria-label="Lukk">✕</button>
+    <h2>Om ${APP_NAME}</h2>
+    <div class="info">
+    <h3>Slik bruker du appen</h3>
+    <ul>
+      <li><b>Ukeplan:</b> middag for hver dag, mandag til søndag. Bla mellom uker, trykk på en dag for å velge rett, og 🎲 for et nytt forslag. «✨ Foreslå ukemeny» fyller hele uka.</li>
+      <li><b>Oppskrifter</b> og <b>Favoritter:</b> alle rettene med ingredienser. Marker favoritter med ★.</li>
+      <li><b>Handleliste:</b> lages fra ukeplanen og skaleres til antall personer. Hak av det du har kjøpt. Avhaking lagres på denne enheten.</li>
+      <li><b>Statistikk:</b> mest brukte middager, fiskemiddager per måned, hverdagsmat mot helgekos.</li>
+    </ul>
+    <h3>Forslag</h3>
+    <p>Forslagene gir raske retter på hverdager og kosemat i helgen, aldri samme rett to dager på rad, og maks én fiskemiddag i uka.</p>
+    <h3>Redigere</h3>
+    <p>Alle som åpner lenken ser planen, men bare den som har en GitHub-nøkkel kan endre den. Lås opp fra menyen ⋯. Nøkkelen lagres bare på denne enheten, og planen lagres i GitHub.</p>
+    <p>Oppskrifter kan hentes fra nettsider med bokmerket «📥 Til Middags panikk», som installeres fra menyen.</p>
+    <h3>Versjoner</h3>
+    <div class="vlog"><b>v1.2.0</b><span>Navn, versjon og info-knapp øverst til venstre, som i de andre appene.</span><b>v1.1.1</b><span>Rettinger: bedre bokmerke-import, tilgjengelige dialoger, bedre kontrast, større trykkflater.</span><b>v1.1.0</b><span>Hent oppskrifter fra nettsider med et bokmerke.</span><b>v1.0.0</b><span>Første versjon.</span></div>
+    </div>`);
+}
+$("#brandVer").textContent = "v" + APP_VERSION;
+
 /* ---------- hendelser ---------- */
 document.addEventListener("click", e => {
   const b = e.target.closest("[data-act]");
@@ -1679,6 +1723,7 @@ document.addEventListener("click", e => {
     case "period": statsPeriod = b.dataset.p; refresh(); break;
     case "theme": toggleTheme(); break;
     case "menu": menuForm(); break;
+    case "info": infoForm(); break;
     case "lock": if (canEdit()) menuForm(); else unlockForm(); break;
     case "saveNow": pushNow(); break;
     case "retrySync": pushNow(); break;

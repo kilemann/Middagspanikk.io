@@ -1,5 +1,8 @@
 # Endringslogg – Middags panikk™
 
+## 1.2.0 – 2026-11-04
+- Navn, versjon og info-knapp (i) øverst til venstre, med bruksanvisning og versjonsliste, som i de andre appene.
+
 ## 1.1.1 – 2026-11-04
 Rettinger etter kodegjennomgang.
 - Bokmerke-import: «1 båt hvitløk» blir hvitløk (fedd), «frisk spinat/estragon» havner under Frukt og grønt,

@@ -1,7 +1,7 @@
 {
   "app": "Middags panikk™",
   "appVersion": "1.1.0",
-  "updated": "2026-11-04T12:29:11.802Z",
+  "updated": "2026-11-04T14:23:22.480Z",
   "version": 1,
   "settings": {
     "persons": 3
@@ -1702,6 +1702,114 @@
           "unit": "g",
           "name": "frisk spinat",
           "section": "Tørrvarer"
+        }
+      ]
+    },
+    {
+      "id": "mw27hdwy3o91ho",
+      "name": "Meksikansk gryte",
+      "desc": "Her er et forsøk på å gjenskape den store familieklassikeren fra pose, helt uten pose. En rund og fyldig gryte der risen koker sammen med resten av ingrediensene. Enkel vanskelighetsgrad",
+      "time": 60,
+      "category": "Kjøtt",
+      "servings": 4,
+      "favorite": false,
+      "url": "https://www.matprat.no/oppskrifter/familien/meksikansk-gryte/",
+      "ingredients": [
+        {
+          "qty": 1,
+          "unit": "stk",
+          "name": "løk",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 2,
+          "unit": "stk",
+          "name": "båter hvitløk",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 2,
+          "unit": "stk",
+          "name": "rød paprika",
+          "section": "Frukt og grønt"
+        },
+        {
+          "qty": 400,
+          "unit": "g",
+          "name": "kjøttdeig",
+          "section": "Kjøtt og fisk"
+        },
+        {
+          "qty": 1,
+          "unit": "ss",
+          "name": "smør",
+          "section": "Meieri og egg"
+        },
+        {
+          "qty": 2,
+          "unit": "ss",
+          "name": "olivenolje",
+          "section": "Tørrvarer"
+        },
+        {
+          "qty": 2,
+          "unit": "ss",
+          "name": "tomatpuré",
+          "section": "Hermetikk og saus"
+        },
+        {
+          "qty": 1,
+          "unit": "ts",
+          "name": "malt spisskummen",
+          "section": "Krydder"
+        },
+        {
+          "qty": 1,
+          "unit": "ts",
+          "name": "chiliflakes",
+          "section": "Krydder"
+        },
+        {
+          "qty": 1,
+          "unit": "ts",
+          "name": "tørket timian",
+          "section": "Krydder"
+        },
+        {
+          "qty": 1,
+          "unit": "ts",
+          "name": "tørket oregano",
+          "section": "Krydder"
+        },
+        {
+          "qty": 400,
+          "unit": "g",
+          "name": "hermetiske tomater",
+          "section": "Hermetikk og saus"
+        },
+        {
+          "qty": 2.5,
+          "unit": "dl",
+          "name": "kyllingkraft",
+          "section": "Kjøtt og fisk"
+        },
+        {
+          "qty": 2,
+          "unit": "dl",
+          "name": "basmatiris",
+          "section": "Tørrvarer"
+        },
+        {
+          "qty": 400,
+          "unit": "g",
+          "name": "hermetiske kidneybønner",
+          "section": "Hermetikk og saus"
+        },
+        {
+          "qty": 200,
+          "unit": "g",
+          "name": "hermetiske maiskorn",
+          "section": "Hermetikk og saus"
         }
       ]
     }

@@ -2,6 +2,7 @@
 Middagsplanlegger for familien Kile: ukeplan, oppskrifter, smarte forslag, handleliste, favoritter og statistikk.
 
 Åpne: https://kilemann.github.io/Middagspanikk.io/
+Legge inn endringer
 
 ## Slik virker lagringen
 - Alt ligger i `meny.json` i dette repoet. Alle som åpner lenken ser planen, men kan ikke endre den.

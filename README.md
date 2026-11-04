@@ -1,4 +1,4 @@
-# Middags panikk™ v1.1.0
+# Middags panikk™ v1.1.1
 Middagsplanlegger for familien Kile: ukeplan, oppskrifter, smarte forslag, handleliste, favoritter og statistikk.
 
 Åpne: https://kilemann.github.io/Middagspanikk.io/

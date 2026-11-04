@@ -1,19 +1,20 @@
 <!doctype html>
-<html lang="no">
+<html lang="nb">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src 'self' https://api.github.com; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Middags panikk™</title>
 <meta name="theme-color" content="#f7f3ec">
 <meta name="description" content="Middagsplanlegger for familien Kile: ukeplan, oppskrifter, handleliste og statistikk.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23d1552f'/%3E%3Ccircle cx='32' cy='33' r='15' fill='%23fff'/%3E%3Ccircle cx='32' cy='33' r='10' fill='none' stroke='%23d1552f' stroke-width='2' opacity='.45'/%3E%3Cpath d='M10 15v10a3 3 0 0 0 3 3v20M13 15v9M16 15v10a3 3 0 0 1-3 3' stroke='%23fff' stroke-width='2.6' stroke-linecap='round' fill='none'/%3E%3Cpath d='M51 48V15c-3 2-4 7-4 13h4' stroke='%23fff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round' fill='%23fff'/%3E%3C/svg%3E">
 <style>
-/* Middags panikk™ v1.1.0 – se CHANGELOG.md */
+/* Middags panikk™ v1.1.1 – se CHANGELOG.md */
 :root{
   --bg:#f7f3ec; --bg2:#efe7da; --card:#fffdf9; --card2:#f5efe5; --line:#e7dccb; --line2:#d6c7af;
-  --ink:#2a231c; --muted:#76695a; --dim:#a19482;
-  --accent:#d1552f; --accent-ink:#fff; --accent-soft:#fbe4d9; --green:#4a8a46; --green-soft:#e2efdd;
-  --star:#dc9b00; --danger:#c0392b; --today:#d1552f;
+  --ink:#2a231c; --muted:#6a5e50; --dim:#76695a;
+  --accent:#b3421e; --accent-ink:#fff; --accent-soft:#fbe4d9; --green:#3b7237; --green-soft:#e2efdd;
+  --star:#9c6c00; --star-bg:#dc9b00; --danger:#c0392b; --today:#b3421e;
   --shadow:0 1px 2px rgba(70,45,20,.06),0 8px 24px rgba(70,45,20,.07);
   --r:18px; --r2:12px;
   --head:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI Variable Display","Segoe UI",system-ui,sans-serif;
@@ -23,18 +24,18 @@
 }
 :root[data-theme="dark"]{
   --bg:#16130f; --bg2:#1d1914; --card:#221e18; --card2:#2a251e; --line:#372f26; --line2:#4a3f33;
-  --ink:#f3ece2; --muted:#b5a794; --dim:#807466;
+  --ink:#f3ece2; --muted:#b5a794; --dim:#9a8d7c;
   --accent:#ef7b52; --accent-ink:#1d0f08; --accent-soft:#3c2318; --green:#86c47f; --green-soft:#1f2d1c;
-  --star:#f4c24f; --danger:#f0705f; --today:#ef7b52;
+  --star:#f4c24f; --star-bg:#f4c24f; --danger:#f0705f; --today:#ef7b52;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.28);
   color-scheme:dark;
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
     --bg:#16130f; --bg2:#1d1914; --card:#221e18; --card2:#2a251e; --line:#372f26; --line2:#4a3f33;
-    --ink:#f3ece2; --muted:#b5a794; --dim:#807466;
+    --ink:#f3ece2; --muted:#b5a794; --dim:#9a8d7c;
     --accent:#ef7b52; --accent-ink:#1d0f08; --accent-soft:#3c2318; --green:#86c47f; --green-soft:#1f2d1c;
-    --star:#f4c24f; --danger:#f0705f; --today:#ef7b52;
+    --star:#f4c24f; --star-bg:#f4c24f; --danger:#f0705f; --today:#ef7b52;
     --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.28);
     color-scheme:dark;
   }
@@ -71,9 +72,9 @@ h3{font-size:1rem;font-weight:700}
 #lockTop{display:flex;align-items:center;gap:6px}
 .brand{min-width:0}
 .brand span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.iconbtn{width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:var(--card);display:grid;place-items:center;font-size:1.05rem}
+.iconbtn{width:42px;height:42px;border-radius:12px;border:1px solid var(--line);background:var(--card);display:grid;place-items:center;font-size:1.05rem}
 .iconbtn:hover{border-color:var(--line2)}
-.lockbtn,.sync,.savebtn{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:7px 12px;font-size:.82rem;font-weight:600;white-space:nowrap}
+.lockbtn,.sync,.savebtn{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:9px 12px;font-size:.82rem;font-weight:600;white-space:nowrap}
 .lockbtn.on{border-color:var(--green);color:var(--green)}
 .sync{border-color:transparent;background:none;color:var(--muted)}
 .sync.ok{color:var(--green)}
@@ -91,7 +92,9 @@ main{max-width:1280px;margin:0 auto;padding:18px max(16px,env(safe-area-inset-ri
   .bottom{display:none}
   main{padding-bottom:48px}
 }
-@media (max-width:520px){ .lockbtn .lbl,.savebtn .lbl,.sync .lbl{display:none} .brand span{font-size:1.05rem} .top-in{gap:8px} .right{gap:5px} .iconbtn{width:38px;height:38px} }
+@media (max-width:520px){ .lockbtn .lbl,.savebtn .lbl,.sync .lbl{display:none} .brand span{font-size:1.05rem} .top-in{gap:8px} .right{gap:5px} }
+@media (max-width:359px){ .brand span{display:none} }
+@media (min-width:1100px){ .mini{width:34px;height:34px} }
 
 /* ---------- felles ---------- */
 .vhead{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:16px}
@@ -101,14 +104,14 @@ main{max-width:1280px;margin:0 auto;padding:18px max(16px,env(safe-area-inset-ri
 .btn.pri{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 .btn.pri:hover{filter:brightness(1.05)}
 .btn.danger{color:var(--danger)}
-.btn.sm{padding:6px 11px;font-size:.85rem;border-radius:10px}
+.btn.sm{padding:9px 12px;font-size:.85rem;border-radius:10px}
 .btn:disabled{opacity:.5;cursor:default}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
 .chips{display:flex;gap:7px;overflow-x:auto;padding:2px 2px 6px;scrollbar-width:none}
 .chips::-webkit-scrollbar{display:none}
-.chip{flex:none;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 12px;font-size:.85rem;font-weight:600;color:var(--muted);white-space:nowrap}
+.chip{flex:none;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:9px 14px;font-size:.85rem;font-weight:600;color:var(--muted);white-space:nowrap}
 .chip.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.chip.fav.on{background:var(--star);border-color:var(--star);color:#2a1d00}
+.chip.fav.on{background:var(--star-bg);border-color:var(--star-bg);color:#2a1d00}
 .tag{display:inline-flex;align-items:center;gap:5px;font-size:.78rem;font-weight:600;color:var(--muted)}
 .dot{width:8px;height:8px;border-radius:50%;background:var(--c,var(--dim));flex:none}
 .pill{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:2px 9px;font-size:.75rem;font-weight:700;background:var(--card2);color:var(--muted)}
@@ -133,7 +136,8 @@ main{max-width:1280px;margin:0 auto;padding:18px max(16px,env(safe-area-inset-ri
 @media (min-width:1100px){ .day{min-height:190px} }
 .day.weekend{background:linear-gradient(180deg,var(--card),var(--card2))}
 .day.today{border-color:var(--today);box-shadow:0 0 0 1px var(--today),var(--shadow)}
-.day.past{opacity:.72}
+.day.past{background:var(--card2)}
+.day.past .mi{opacity:.55;filter:grayscale(.6)}
 .day header{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:8px}
 .day .dn{font:800 1rem var(--head)}
 .day .dd{font-size:.8rem;color:var(--muted)}
@@ -147,9 +151,9 @@ main{max-width:1280px;margin:0 auto;padding:18px max(16px,env(safe-area-inset-ri
 .add:hover{color:var(--accent);border-color:var(--accent)}
 .noplan{flex:1;display:grid;place-items:center;color:var(--dim);font-size:.9rem}
 .day footer{display:flex;align-items:center;gap:6px;margin-top:10px}
-.pp{border:1px solid var(--line);background:var(--card2);border-radius:999px;padding:3px 10px;font-size:.8rem;font-weight:700}
+.pp{border:1px solid var(--line);background:var(--card2);border-radius:999px;padding:8px 12px;min-height:38px;font-size:.8rem;font-weight:700}
 .pp.four{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
-.mini{width:30px;height:30px;border-radius:9px;border:1px solid transparent;background:none;display:grid;place-items:center;color:var(--muted)}
+.mini{width:40px;height:40px;border-radius:9px;border:1px solid transparent;background:none;display:grid;place-items:center;color:var(--muted)}
 .mini:hover{background:var(--card2);border-color:var(--line)}
 .day footer .sp{flex:1}
 .summary{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
@@ -160,14 +164,15 @@ main{max-width:1280px;margin:0 auto;padding:18px max(16px,env(safe-area-inset-ri
 .tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:10px}
 .tools select{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:10px 12px}
 .grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));margin-top:6px}
-.rc{position:relative;display:flex;gap:12px;align-items:flex-start;text-align:left;padding:14px;border-radius:var(--r);border:1px solid var(--line);background:var(--card);box-shadow:var(--shadow);width:100%}
+.rc{position:relative;border-radius:var(--r);border:1px solid var(--line);background:var(--card);box-shadow:var(--shadow);width:100%}
+.rcmain{display:flex;gap:12px;align-items:flex-start;text-align:left;padding:14px;border:0;background:none;border-radius:var(--r);width:100%;color:inherit;font:inherit}
 .rc:hover{border-color:var(--line2)}
 .ricon{flex:none;width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-size:1.45rem;background:color-mix(in srgb,var(--c) 16%,var(--card))}
 .rc .rb{flex:1;min-width:0}
-.rc b{display:block;font:700 1.02rem/1.25 var(--head);padding-right:26px}
-.rc p{margin:3px 0 7px;color:var(--muted);font-size:.86rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.rc b{display:block;font:700 1.02rem/1.25 var(--head);padding-right:40px}
+.rc .rd{display:-webkit-box;margin:3px 0 7px;color:var(--muted);font-size:.86rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .rc .meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
-.star{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:10px;border:0;background:none;font-size:1.15rem;color:var(--dim);display:grid;place-items:center}
+.star{position:absolute;top:6px;right:6px;width:40px;height:40px;border-radius:10px;border:0;background:none;font-size:1.15rem;color:var(--dim);display:grid;place-items:center}
 .star.on{color:var(--star)}
 .ro .star:not(.on){display:none}
 .count{font-size:.85rem;color:var(--muted);margin-left:auto}
@@ -177,7 +182,7 @@ main{max-width:1280px;margin:0 auto;padding:18px max(16px,env(safe-area-inset-ri
 .progress{height:8px;border-radius:99px;background:var(--card2);overflow:hidden;flex:1;min-width:140px}
 .progress i{display:block;height:100%;background:var(--green);border-radius:99px;transition:width .3s}
 .daypick{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
-.daypick button{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:6px 10px;font-size:.82rem;font-weight:700;color:var(--muted);min-width:46px}
+.daypick button{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:10px;font-size:.82rem;font-weight:700;color:var(--muted);min-width:46px}
 .daypick button.on{background:var(--green-soft);color:var(--green);border-color:var(--green)}
 .daypick button:disabled{opacity:.35;cursor:default}
 .secs{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));align-items:start}
@@ -187,6 +192,8 @@ main{max-width:1280px;margin:0 auto;padding:18px max(16px,env(safe-area-inset-ri
 .item{display:flex;align-items:center;gap:12px;padding:8px 2px;border-top:1px solid var(--line);cursor:pointer;user-select:none}
 .item:first-of-type{border-top:0}
 .item input{position:absolute;opacity:0;pointer-events:none}
+.item input:focus-visible + .box{outline:2px solid var(--accent);outline-offset:2px}
+.modal:focus{outline:none}
 .box{flex:none;width:24px;height:24px;border-radius:8px;border:2px solid var(--line2);display:grid;place-items:center;transition:.15s}
 .item.done .box{background:var(--green);border-color:var(--green)}
 .item.done .box::after{content:"";width:6px;height:11px;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(45deg) translate(-1px,-1px)}
@@ -232,7 +239,7 @@ main{max-width:1280px;margin:0 auto;padding:18px max(16px,env(safe-area-inset-ri
 @keyframes up{from{transform:translateY(24px);opacity:.4}}
 .modal.wide{max-width:780px}
 .modal h2{margin-bottom:6px;padding-right:36px}
-.mclose{position:sticky;top:0;float:right;margin:-6px -6px 0 0;width:36px;height:36px;border-radius:50%;border:0;background:var(--card2);font-size:1.1rem;z-index:2}
+.mclose{position:sticky;top:0;float:right;margin:-6px -6px 0 0;width:40px;height:40px;border-radius:50%;border:0;background:var(--card2);font-size:1.1rem;z-index:2}
 .acts{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;margin-top:18px}
 .acts .grow{margin-right:auto}
 .form{display:grid;gap:12px;grid-template-columns:1fr 1fr;margin-top:12px}
@@ -244,11 +251,11 @@ main{max-width:1280px;margin:0 auto;padding:18px max(16px,env(safe-area-inset-ri
 .check{display:flex;align-items:center;gap:8px;font-weight:600}
 .check input{width:20px;height:20px;accent-color:var(--accent)}
 .ings{display:grid;gap:8px}
-.ing{display:grid;grid-template-columns:70px 82px 1fr 36px;gap:6px;align-items:center}
+.ing{display:grid;grid-template-columns:70px 82px 1fr 40px;gap:6px;align-items:center}
 .ing .sec-sel{grid-column:1/4}
-.ing .x{border:0;background:none;color:var(--dim);font-size:1.1rem;height:36px}
-@media (min-width:560px){ .ing{grid-template-columns:72px 84px 1fr 150px 36px} .ing .sec-sel{grid-column:auto} }
-.ing-head{display:none;font-size:.74rem;font-weight:700;color:var(--dim);grid-template-columns:72px 84px 1fr 150px 36px;gap:6px}
+.ing .x{border:0;background:none;color:var(--dim);font-size:1.1rem;height:40px}
+@media (min-width:560px){ .ing{grid-template-columns:72px 84px 1fr 150px 40px} .ing .sec-sel{grid-column:auto} }
+.ing-head{display:none;font-size:.74rem;font-weight:700;color:var(--dim);grid-template-columns:72px 84px 1fr 150px 40px;gap:6px}
 @media (min-width:560px){ .ing-head{display:grid} }
 .detail-meta{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
 .ilist{list-style:none;padding:0;margin:8px 0 0;columns:2;column-gap:20px}
@@ -262,7 +269,8 @@ main{max-width:1280px;margin:0 auto;padding:18px max(16px,env(safe-area-inset-ri
 .pick .pb{flex:1;min-width:0}
 .pick .pb b{display:block;font-weight:700;font-size:.95rem}
 .pick .pb small{color:var(--muted)}
-.pick.off{opacity:.5}
+.pick.off{border-style:dashed}
+.pick.off .ricon{opacity:.45;filter:grayscale(.7)}
 .sugg{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 .sugg button{border:1px solid var(--accent);background:var(--accent-soft);color:var(--ink);border-radius:12px;padding:8px 12px;font-weight:600;text-align:left}
 .sugg button small{display:block;color:var(--muted);font-weight:500;font-size:.75rem}
@@ -289,6 +297,7 @@ main{max-width:1280px;margin:0 auto;padding:18px max(16px,env(safe-area-inset-ri
 .toast span{flex:1}
 .toast button{border:0;background:none;color:var(--accent);font-weight:800;padding:2px 4px}
 .loading{display:grid;place-items:center;min-height:50vh;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){ *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;scroll-behavior:auto !important} }
 </style>
 </head>
 <body class="ro">
@@ -319,7 +328,7 @@ main{max-width:1280px;margin:0 auto;padding:18px max(16px,env(safe-area-inset-ri
    Alle kan se. Redigering låses opp med GitHub-nøkkel.
    ========================================================= */
 const APP_NAME = "Middags panikk™";
-const APP_VERSION = "1.1.0";
+const APP_VERSION = "1.1.1";
 const GH = { owner: "kilemann", repo: "Middagspanikk.io", path: "meny.json", branch: "main" };
 
 const KEY = k => "middagspanikk." + k;
@@ -532,6 +541,11 @@ async function load(){
       if (rem.missing || !rem.sha || rem.sha === sync.sha){ loadState = "ok"; refresh(); save(); runImport(); return; }
       const mine = await confirmBox("Ulagrede endringer", "Denne enheten har endringer som ikke ble lagret, og planen på nettet er endret siden. Vil du beholde endringene fra denne enheten?", "Behold mine", false, "Bruk den på nettet");
       if (mine){ sync.sha = rem.sha; saveSync(); loadState = "ok"; refresh(); save(); runImport(); return; }
+    }
+    if (rem.fromPages && canEdit() && cached){
+      // GitHub-API svarte ikke: ikke la den (kanskje eldre) Pages-kopien overskrive lagret kopi
+      toast("Fikk ikke kontakt med GitHub – viser lagret kopi");
+      loadState = "ok"; refresh(); runImport(); return;
     }
     if (rem.data) db = rem.data; else if (!cached) db = seed();
     if (rem.sha) sync.sha = rem.sha;
@@ -775,6 +789,8 @@ const VIEWS = [["uke", "Ukeplan", "Uke"], ["oppskrifter", "Oppskrifter", "Retter
 const SEARCH_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>';
 
 function drawNav(){
+  const cur = VIEWS.find(v => v[0] === view);
+  document.title = (cur ? cur[1] + " – " : "") + APP_NAME;
   $("#tabs").innerHTML = VIEWS.map(([k, long]) => `<a class="tab${view === k ? " on" : ""}" href="#/${k}">${ICONS[k]}${long}</a>`).join("");
   $("#bottom").innerHTML = VIEWS.map(([k, , short]) => `<a class="navbtn${view === k ? " on" : ""}" href="#/${k}" aria-label="${short}">${ICONS[k]}<span>${short}</span></a>`).join("");
 }
@@ -865,7 +881,7 @@ function dayForm(ds){
     <div class="search" style="margin-top:14px">${SEARCH_ICON}<input type="search" id="dq" placeholder="Søk etter rett…" aria-label="Søk etter rett"></div>
     <div class="pick-list" id="pl"></div>
     <div class="lbl-row"><b>Noe annet?</b></div>
-    <form class="freetext" id="ftf"><input id="ft" maxlength="80" placeholder="F.eks. rester, spise ute, bursdag" value="${cur && !cur.recipeId ? esc(cur.name) : ""}"><button class="btn" type="submit">Bruk</button></form>
+    <form class="freetext" id="ftf"><input id="ft" maxlength="80" aria-label="Annet enn en rett" placeholder="F.eks. rester, spise ute, bursdag" value="${cur && !cur.recipeId ? esc(cur.name) : ""}"><button class="btn" type="submit">Bruk</button></form>
     <div class="acts">${cur ? '<button class="btn danger grow" id="rm">Fjern middag</button>' : ""}<button class="btn" data-close>Lukk</button></div>`,
   (m, close) => {
     const drawPs = () => $$("#ps button", m).forEach(b => b.classList.toggle("on", +b.dataset.p === persons));
@@ -1012,10 +1028,12 @@ function drawGrid(){
   $("#cnt").textContent = `${list.length} ${list.length === 1 ? "rett" : "retter"}`;
   $("#grid").innerHTML = list.map(r => {
     const n = used(r.id);
-    return `<div class="rc" role="button" tabindex="0" data-act="recipe" data-id="${r.id}">
+    return `<div class="rc" data-id="${r.id}">
+      <button class="rcmain" data-act="recipe" data-id="${r.id}">
       <span class="ricon" style="--c:${catColor(r.category)}">${catIcon(r.category)}</span>
-      <span class="rb"><b>${esc(r.name)}</b><p>${esc(r.desc) || "&nbsp;"}</p>
+      <span class="rb"><b>${esc(r.name)}</b><span class="rd">${esc(r.desc) || "&nbsp;"}</span>
         <span class="meta"><span class="pill${r.time <= FAST ? " fast" : ""}">⏱ ${r.time} min</span><span class="tag"><span class="dot" style="--c:${catColor(r.category)}"></span>${esc(r.category)}</span>${n ? `<span class="tag">· ${n}× brukt</span>` : ""}</span></span>
+      </button>
       <button class="star${r.favorite ? " on" : ""}" data-act="fav" data-id="${r.id}" aria-label="${r.favorite ? "Fjern fra favoritter" : "Legg til favoritter"}" ${canEdit() ? "" : "disabled"}>${r.favorite ? "★" : "☆"}</button>
     </div>`;
   }).join("") || `<div class="empty" style="grid-column:1/-1"><b>${fav ? "★" : "🔍"}</b>${fav && !db.recipes.some(r => r.favorite) ? "Ingen favoritter ennå. Trykk ☆ på en rett for å markere den." : "Ingen retter passer søket."}</div>`;
@@ -1170,20 +1188,20 @@ const UNIT_ALIAS = {
   stk: ["stk"], stykk: ["stk"], stykker: ["stk"],
   pk: ["pk"], pakke: ["pk"], pakker: ["pk"], pakning: ["pk"], pakninger: ["pk"],
   pose: ["pose"], poser: ["pose"], boks: ["boks"], bokser: ["boks"], glass: ["glass"], beger: ["beger"],
-  fedd: ["fedd"], skive: ["skive"], skiver: ["skive"], bunt: ["bunt"], bunter: ["bunt"],
+  fedd: ["fedd"], båt: ["fedd"], båter: ["fedd"], skive: ["skive"], skiver: ["skive"], bunt: ["bunt"], bunter: ["bunt"],
   terning: ["stk"], terninger: ["stk"],
   klype: ["", 0], klyper: ["", 0], dryss: ["", 0], neve: ["stk"], never: ["stk"],
 };
 const FRAC = { "½": .5, "¼": .25, "¾": .75, "⅓": 1 / 3, "⅔": 2 / 3, "⅛": .125 };
 const SEC_RULES = [
   ["Frys", /\b(frossen|frosne|fryst|frosset)/],
-  ["Hermetikk og saus", /hakkede tomater|knuste tomater|tomatpur|tomatsaus|kokosmelk|bønner|kikerter|saus\b|saus$|ketchup|sennep|majones|soya|pesto|salsa|dressing|syltetøy|currypaste|hermetisk|\bmais\b/],
+  ["Hermetikk og saus", /kraft\\b|fond\\b|hakkede tomater|knuste tomater|tomatpur|tomatsaus|kokosmelk|bønner|kikerter|saus\b|saus$|ketchup|sennep|majones|soya|pesto|salsa|dressing|syltetøy|currypaste|hermetisk|\bmais\b/],
   ["Krydder", /\bsalt\b|pepper\b|krydder|pulver|karri|spisskummen|kanel|oregano|timian|rosmarin|buljong|chiliflak|laurbær|muskat|kardemomme|nellik/],
   ["Brød og bakst", /brød|lefse|tortilla|pita|lompe|rundstykk|nanbrød|\bnan\b|baguette|loff|wraps?\b|ciabatta/],
   ["Tørrvarer", /mel\b|\bris\b|pasta|spaghetti|makaroni|nudler|sukker|havregryn|linser|bulgur|couscous|olje|eddik|nøtter|mandler|panko|griljermel|maisenna|bakepulver|natron|lasagneplater|tacoskjell|nachochips|honning/],
   ["Kjøtt og fisk", /kjøtt|deig|kylling|biff|filet|svin|bacon|skinke|pølse|laks|torsk|\bsei\b|fisk|reke|kotelett|lår|entrecote|\blam|karbonade|chorizo|salami|kalkun|ørret|makrell|hyse|kveite|skrei|tunfisk|kjøttkak|medisterkak|ribbe|nakke/],
   ["Meieri og egg", /melk|fløte|rømme|\bost\b|ost$|smør|\begg\b|egg$|eggeplom|yoghurt|crème|creme|kesam|parmesan|mozzarella|cheddar|feta|kremost|gjær|kulturmelk/],
-  ["Frukt og grønt", /løk|potet|gulrot|tomat|agurk|salat|paprika|brokkoli|blomkål|squash|sopp|sjampinjong|purre|sitron|lime|avokado|spinat|kål|chili|ingefær|persille|koriander|basilikum|gressløk|dill|selleri|eple|banan|bær|erter|asparges|aubergine|bønnespirer|reddik|rødbet|kålrot|søtpotet|mango|pasjon|urter|ruccola|sukkererter|kjerne/],
+  ["Frukt og grønt", /\\bfrisk|\\bfersk|estragon|mynte|salvie|kerve|rucola|fennikel|rosenkål|grønnkål|pære|plomme|appelsin|mandarin|ananas|melon|kiwi|fersken|druer|nektarin|løk|potet|gulrot|tomat|agurk|salat|paprika|brokkoli|blomkål|squash|sopp|sjampinjong|purre|sitron|lime|avokado|spinat|kål|chili|ingefær|persille|koriander|basilikum|gressløk|dill|selleri|eple|banan|bær|erter|asparges|aubergine|bønnespirer|reddik|rødbet|kålrot|søtpotet|mango|pasjon|urter|ruccola|sukkererter|kjerne/],
 ];
 const htmlText = s => { const d = new DOMParser().parseFromString(String(s ?? ""), "text/html"); return (d.body.textContent || "").replace(/\s+/g, " ").trim(); };
 const hostOf = u => { try{ return new URL(u).hostname.replace(/^www\./, ""); }catch(e){ return "nettsiden"; } };
@@ -1210,18 +1228,27 @@ function guessSection(name, known){
   for (const [sec, re] of SEC_RULES.slice(0, 3)) if (re.test(n)) return sec;   // frys, hermetikk, krydder går foran
   if (known){
     let best = null;   // lengste kjente navn som står i navnet, f.eks. «kjøttdeig» i «kjøttdeig av storfe»
-    for (const [k, g] of known) if (k.length > 2 && n.includes(k) && (!best || k.length > best[0].length)) best = [k, g];
+    for (const [k, g] of known) if (k.length > 2 && hasWord(n, k) && (!best || k.length > best[0].length)) best = [k, g];
     if (best) return best[1].section;
   }
   for (const [sec, re] of SEC_RULES) if (re.test(n)) return sec;
   return "Annet";
 }
 /* «2 ss olivenolje», «400g kjøttdeig», «1 1/2 dl fløte», «2–3 fedd hvitløk, finhakket», «Salt og pepper» */
+const hasWord = (text, w) => {
+  const i = text.indexOf(w);
+  if (i < 0) return false;
+  const L = /[a-zæøåéèü0-9]/i;
+  for (let j = i; j >= 0; j = text.indexOf(w, j + 1)){
+    if ((j === 0 || !L.test(text[j - 1])) && (j + w.length >= text.length || !L.test(text[j + w.length]))) return true;
+  }
+  return false;
+};
 function parseIngLine(line, known){
   let s = htmlText(line).replace(/^[-•*·]\s*/, "").replace(/^(ca\.?|cirka|omtrent|ev\.?|evt\.?)\s+/i, "");
   if (!s) return null;
   const NUM = "(?:\\d+\\s+\\d+\\/\\d+|\\d+\\/\\d+|\\d+\\s*[½¼¾⅓⅔⅛]|[½¼¾⅓⅔⅛]|\\d+(?:[.,]\\d+)?)";
-  const m = s.match(new RegExp(`^(${NUM})(?:\\s*[-–]\\s*(${NUM}))?\\s*(.*)$`));
+  const m = s.match(new RegExp(`^(${NUM})(?:(?:\\s*[-–]\\s*|\\s+(?:til|eller)\\s+)(${NUM}))?\\s*(.*)$`));
   let qty = 0, unit = "stk", rest = s;
   if (m && m[3] !== undefined){
     qty = readNum(m[2] || m[1]);   // spenn som «2–3»: kjøp det største
@@ -1534,23 +1561,48 @@ function openModal(html, onMount, cls = ""){
   if (modalClose) modalClose();
   const wrap = document.createElement("div");
   wrap.id = "modal"; wrap.className = "modal-wrap";
-  wrap.innerHTML = `<div class="modal ${cls}" role="dialog" aria-modal="true">${html}</div>`;
+  wrap.innerHTML = `<div class="modal ${cls}" role="dialog" aria-modal="true" tabindex="-1">${html}</div>`;
+  const dlg = wrap.firstElementChild;
+  const h = $("h2", dlg);
+  if (h){ h.id = "mtitle"; dlg.setAttribute("aria-labelledby", "mtitle"); } else dlg.setAttribute("aria-label", APP_NAME);
   const prev = document.activeElement;
   document.body.appendChild(wrap); document.body.classList.add("noscroll");
-  const onKey = e => { if (e.key === "Escape") close(); };
+  const bg = ["header.top", "#main", "#bottom"].map(q => $(q)).filter(Boolean);
+  bg.forEach(el => el.inert = true);
+  let dirty = false;
+  dlg.addEventListener("input", () => { dirty = true; });
+  const focusables = () => [...dlg.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]):not([type=hidden]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])')].filter(el => el.offsetParent !== null || el === document.activeElement);
+  const onKey = e => {
+    if (e.key === "Escape"){ close(); return; }
+    if (e.key !== "Tab") return;
+    const f = focusables();
+    if (!f.length){ e.preventDefault(); dlg.focus(); return; }
+    const first = f[0], last = f[f.length - 1], a = document.activeElement;
+    if (e.shiftKey && (a === first || a === dlg)){ e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && a === last){ e.preventDefault(); first.focus(); }
+    else if (!dlg.contains(a)){ e.preventDefault(); first.focus(); }
+  };
   const close = () => {
     if (!wrap.isConnected) return;
     wrap.remove(); document.body.classList.remove("noscroll");
+    bg.forEach(el => el.inert = false);
     document.removeEventListener("keydown", onKey);
     if (modalClose === close) modalClose = null;
     if (prev && prev.focus && prev.isConnected) prev.focus({ preventScroll: true });
   };
   document.addEventListener("keydown", onKey);
-  wrap.addEventListener("click", e => { if (e.target === wrap || e.target.closest("[data-close]")) close(); });
+  wrap.addEventListener("click", e => {
+    if (e.target.closest("[data-close]")) close();
+    else if (e.target === wrap){
+      if (dirty && dlg.querySelector("form")) toast("Trykk «Avbryt» for å lukke uten å lagre");
+      else close();
+    }
+  });
   modalClose = close;
-  if (onMount) onMount(wrap.firstElementChild, close);
+  if (onMount) onMount(dlg, close);
   const f = $("[autofocus]", wrap);
   if (f && matchMedia("(min-width:700px)").matches) setTimeout(() => f.focus(), 40);
+  else dlg.focus({ preventScroll: true });
   return close;
 }
 function confirmBox(title, text, okText = "Slett", danger = true, cancelText = "Avbryt"){
@@ -1663,9 +1715,6 @@ document.addEventListener("click", e => {
   if ("fav" in c.dataset) f.fav = !f.fav; else f.cat = c.dataset.cat;
   $$("#cats .chip").forEach(x => x.classList.toggle("on", "fav" in x.dataset ? f.fav : x.dataset.cat === f.cat));
   drawGrid();
-});
-document.addEventListener("keydown", e => {
-  if ((e.key === "Enter" || e.key === " ") && e.target.matches(".rc[data-act]")){ e.preventDefault(); recipeDetail(e.target.dataset.id); }
 });
 addEventListener("hashchange", route);
 addEventListener("storage", e => {
